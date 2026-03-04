@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Bloqueios Emocionais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #06b6d4);
+            min-height: 100vh;
+            color: #1f2937;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5) inset;
+        }
+
+        .option {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+        }
+        
+        .option:hover:not(.selected) {
+            transform: translateY(-2px);
+            border-color: #93c5fd;
+            background-color: #eff6ff;
+        }
+        
+        .option.selected {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #1d4ed8;
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .fill {
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border-radius: 9999px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.75rem;
+        }
+        
+        .fill::after {
+            content: attr(data-percent);
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            animation: pulse 2s infinite;
+        }
+        .btn-start:hover {
+            animation: none;
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(14, 165, 233, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+        .input-field:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive;
+            color: #0284c7;
+        }
+
+        /* Cores temáticas para os módulos */
+        .color-familia { background: linear-gradient(90deg, #ef4444, #b91c1c); }
+        .color-relacionamentos { background: linear-gradient(90deg, #ec4899, #be185d); }
+        .color-carreira { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+        .color-financas { background: linear-gradient(90deg, #10b981, #047857); }
+        .color-autoestima { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+        .color-saude { background: linear-gradient(90deg, #14b8a6, #0f766e); }
+        .color-social { background: linear-gradient(90deg, #f59e0b, #b45309); }
+        .color-emocional { background: linear-gradient(90deg, #6366f1, #4338ca); }
+        .color-total { background: linear-gradient(90deg, #111827, #374151); }
+        
+        /* Loading Overlay */
+        #loading-overlay {
+            backdrop-filter: blur(5px);
+            background: rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 md:p-8">
+
+    <div class="glass-panel w-full max-w-4xl p-6 md:p-10 relative overflow-hidden fade-in">
+        
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="space-y-6 text-center">
+            <div class="mb-8">
+                <h1 class="text-4xl font-extrabold text-gray-800 mb-4">Análise de Padrões Emocionais</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Descubra as áreas da sua vida que podem estar sendo limitadas por bloqueios inconscientes. Responda com sinceridade para um diagnóstico preciso.</p>
+            </div>
+            
+            <div class="max-w-md mx-auto space-y-5 text-left">
+                <div class="relative">
+                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <input type="text" id="user-name" placeholder="Seu Nome Completo" class="input-field" required>
+                </div>
+                <div class="relative">
+                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <input type="email" id="user-email" placeholder="Seu Melhor E-mail" class="input-field" required>
+                </div>
+                <div class="relative">
+                    <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <input type="number" id="user-age" placeholder="Sua Idade" min="12" max="120" class="input-field" required>
+                </div>
+                
+                <p id="start-error" class="text-red-500 font-medium text-sm text-center hidden">⚠️ Por favor, preencha todos os campos corretamente para iniciar.</p>
+                
+                <button onclick="startTest()" class="btn-start w-full py-4 rounded-xl text-white font-bold text-lg mt-4 shadow-lg">
+                    Iniciar Avaliação Agora
+                </button>
+            </div>
+        </div>
+
+        <!-- Tela do Questionário -->
+        <div id="quiz-screen" class="hidden space-y-6">
+            <div class="flex justify-between items-center mb-2">
+                <span id="progress-text" class="text-sm md:text-base text-gray-500 font-bold tracking-wide uppercase">Pergunta 1 de 40</span>
+                <span id="module-badge" class="px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs md:text-sm font-bold border border-blue-100 shadow-sm">Módulo</span>
+            </div>
+            
+            <div class="w-full bg-gray-100 rounded-full h-2.5 mb-8 shadow-inner overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-blue-400 to-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+
+            <div id="question-container" class="min-h-[250px] flex flex-col justify-center bg-gray-50 p-6 md:p-10 rounded-2xl border border-gray-100 shadow-sm">
+                <h2 id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 text-center leading-relaxed">Carregando...</h2>
+                
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto w-full">
+                    <!-- Opções injetadas via JS -->
+                </div>
+                
+                <p id="quiz-error" class="text-red-500 font-medium text-sm text-center mt-6 hidden transition-opacity">
+                    ⚠️ Selecione uma opção para avançar.
+                </p>
+            </div>
+
+            <div class="flex justify-between items-center mt-8 pt-4">
+                <button id="btn-prev" onclick="prevQuestion()" class="btn-secondary px-6 md:px-8 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    Anterior
+                </button>
+                <button id="btn-next" onclick="nextQuestion()" class="btn-primary px-6 md:px-8 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:opacity-90 shadow-md">
+                    Próxima
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="hidden space-y-8">
+            <div class="text-center fade-in">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">Sua Análise, <span id="result-name" class="text-blue-600"></span></h2>
+                <p class="text-gray-600 text-lg">Mapeamos as áreas onde você apresenta maior resistência emocional.</p>
+            </div>
+
+            <!-- Container capturado pelo html2canvas -->
+            <div id="score-section" class="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm relative z-10">
+                <h3 class="text-xl font-bold text-gray-700 mb-8 text-center uppercase tracking-wider">Índice de Bloqueio por Área</h3>
+                
+                <div id="charts-container" class="space-y-6">
+                    <!-- Barras de progresso injetadas via JS -->
+                </div>
+                
+                <div class="mt-10 pt-8 border-t border-gray-100">
+                    <div class="flex justify-between items-end mb-3">
+                        <h4 class="text-lg font-bold text-gray-800 uppercase">Média Geral de Bloqueio</h4>
+                        <span id="total-score-text" class="text-2xl font-black text-gray-800">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-8 shadow-inner overflow-hidden">
+                        <div id="total-score-fill" class="fill color-total" data-percent="0%" style="width: 0%"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-3 text-center">Quanto maior a porcentagem, maior a presença de amarras emocionais nesta área.</p>
+                </div>
+            </div>
+
+            <div id="explanations-container" class="space-y-6 text-gray-700 bg-blue-50/50 p-6 md:p-8 rounded-2xl border border-blue-100 fade-in">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Interpretação dos Resultados</h3>
+                <div id="dynamic-explanations" class="space-y-4 text-base md:text-lg leading-relaxed">
+                    <!-- Textos dinâmicos baseados nas notas -->
+                </div>
+                <div class="mt-8 text-center">
+                    <p class="signature text-4xl mb-1">Instituto Impulso Coaching</p>
+                    <p class="text-sm text-gray-500 uppercase tracking-widest font-semibold">Desenvolvimento Humano</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8 pt-4 border-t border-gray-100">
+                <button onclick="generateAndSendPDF()" class="btn-primary w-full sm:w-auto px-8 py-4 rounded-xl text-white font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Baixar Relatório PDF e Enviar E-mail
+                </button>
+                <button onclick="location.reload()" class="bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center transition-all">
+                    Refazer Teste
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center rounded-2xl">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+            <p class="text-lg font-semibold text-gray-700 animate-pulse" id="loading-text">Processando resultados...</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Configuração dos Módulos e Mapeamento
+        const moduleConfig = {
+            familia: { id: "familia", label: "Raízes Familiares", class: "color-familia", desc: "Reflete dinâmicas herdadas, dependência de aprovação e ressentimentos com a família de origem." },
+            relacionamentos: { id: "relacionamentos", label: "Relacionamentos Afetivos", class: "color-relacionamentos", desc: "Avalia medo da entrega, autossabotagem conjugal e repetição de padrões tóxicos." },
+            carreira: { id: "carreira", label: "Carreira e Propósito", class: "color-carreira", desc: "Mede o medo do fracasso (ou do sucesso), procrastinação e estagnação profissional." },
+            financas: { id: "financas", label: "Finanças e Merecimento", class: "color-financas", desc: "Analisa crenças de escassez, dificuldade de reter dinheiro e bloqueio de merecimento." },
+            autoestima: { id: "autoestima", label: "Autoestima e Identidade", class: "color-autoestima", desc: "Reflete a percepção de valor próprio, excesso de autocrítica e necessidade de agradar." },
+            saude: { id: "saude", label: "Saúde e Autocuidado", class: "color-saude", desc: "Mede a negligência com o corpo físico, somatização e dificuldade de impor limites." },
+            social: { id: "social", label: "Conexões Sociais", class: "color-social", desc: "Avalia o medo do julgamento alheio, isolamento protetivo e dificuldade de vulnerabilidade." },
+            emocional: { id: "emocional", label: "Gestão Emocional", class: "color-emocional", desc: "Analisa a repressão de sentimentos, reatividade exagerada e dificuldade de expressar a própria verdade." }
+        };
+
+        // Banco de 40 Perguntas (5 por módulo)
+        const questions = [
+            // Família
+            { text: "Sinto que carrego pesos, culpas ou responsabilidades que na verdade pertencem aos meus pais.", module: "familia" },
+            { text: "Minhas escolhas de vida ainda são muito guiadas pelo que minha família vai pensar.", module: "familia" },
+            { text: "Tenho dificuldade em perdoar falhas ou ausências da minha figura paterna/materna.", module: "familia" },
+            { text: "Sinto que preciso compensar os sofrimentos que meus pais passaram na vida deles.", module: "familia" },
+            { text: "Atuo como 'pai' ou 'mãe' dos meus próprios pais ou irmãos.", module: "familia" },
+            
+            // Relacionamentos
+            { text: "Quando um relacionamento começa a ficar sério, encontro formas inconscientes de afastamento.", module: "relacionamentos" },
+            { text: "Costumo atrair parceiros(as) indisponíveis emocionalmente ou que precisam ser 'salvos'.", module: "relacionamentos" },
+            { text: "Tenho dificuldade em demonstrar minhas fraquezas para quem eu amo por medo de abandono.", module: "relacionamentos" },
+            { text: "Sinto ciúmes excessivos e insegurança de que serei trocado(a) a qualquer momento.", module: "relacionamentos" },
+            { text: "Prefiro me manter isolado(a) afetivamente a correr o risco de me machucar novamente.", module: "relacionamentos" },
+            
+            // Carreira
+            { text: "Duvido constantemente da minha capacidade, mesmo quando recebo elogios profissionais.", module: "carreira" },
+            { text: "Tenho o hábito de procrastinar projetos importantes que poderiam alavancar minha carreira.", module: "carreira" },
+            { text: "Sinto culpa ou desconforto quando me destaco mais do que meus colegas ou familiares.", module: "carreira" },
+            { text: "Tenho dificuldade extrema em dizer 'não' no trabalho e acabo sobrecarregado(a).", module: "carreira" },
+            { text: "Trabalho muito, mas sinto que nunca estou alinhado(a) com meu verdadeiro propósito.", module: "carreira" },
+            
+            // Finanças
+            { text: "Sinto um desconforto profundo ao cobrar pelo meu serviço ou pedir um aumento justo.", module: "financas" },
+            { text: "Sempre que ganho um dinheiro extra, algo inesperado acontece e o dinheiro 'some'.", module: "financas" },
+            { text: "Tenho a crença de que pessoas ricas são desonestas ou gananciosas.", module: "financas" },
+            { text: "Sinto culpa ao gastar dinheiro comigo mesmo(a) em coisas que me dão prazer.", module: "financas" },
+            { text: "O medo de faltar dinheiro no futuro domina minhas decisões no presente.", module: "financas" },
+
+            // Autoestima
+            { text: "Minha voz interna é muito mais crítica e dura comigo mesmo(a) do que com os outros.", module: "autoestima" },
+            { text: "Comparo constantemente meus bastidores com o palco (sucesso) das outras pessoas.", module: "autoestima" },
+            { text: "Tenho enorme dificuldade em receber elogios, sempre os minimizando ou negando.", module: "autoestima" },
+            { text: "Sinto que, no fundo, há algo de errado comigo ou que não sou 'suficiente'.", module: "autoestima" },
+            { text: "Modifico meu jeito de ser e pensar apenas para ser aceito(a) em determinados grupos.", module: "autoestima" },
+
+            // Saúde
+            { text: "Deixo o cuidado com a minha saúde física (médicos, exercícios, alimentação) sempre para depois.", module: "saude" },
+            { text: "Sinto dores físicas frequentes (cabeça, estômago, tensão) após passar por estresses emocionais.", module: "saude" },
+            { text: "Uso a comida ou outras compulsões como válvula de escape para preencher vazios emocionais.", module: "saude" },
+            { text: "Me sinto exausto(a) e sem energia, mesmo após ter dormido horas suficientes.", module: "saude" },
+            { text: "Tenho dificuldade de aceitar a imagem do meu corpo quando me olho no espelho.", module: "saude" },
+
+            // Social
+            { text: "Evito me expor publicamente ou dar minha opinião em grupo por medo do julgamento.", module: "social" },
+            { text: "Em eventos sociais, sinto uma inadequação, como se eu não pertencesse àquele lugar.", module: "social" },
+            { text: "Tenho dificuldade de pedir ajuda aos amigos mesmo quando estou passando por apuros.", module: "social" },
+            { text: "Corto relações rapidamente no primeiro sinal de conflito para evitar confrontos.", module: "social" },
+            { text: "Sinto que minhas amizades são superficiais e não confio plenamente nas pessoas.", module: "social" },
+
+            // Emocional
+            { text: "Guardo sentimentos de raiva ou tristeza para mim até explodir de forma desproporcional.", module: "emocional" },
+            { text: "Tenho pavor de chorar na frente de outras pessoas e parecer vulnerável.", module: "emocional" },
+            { text: "Fico remoendo conversas e situações do passado repetidas vezes na minha mente.", module: "emocional" },
+            { text: "Sinto uma necessidade de controlar tudo ao meu redor para me sentir seguro(a).", module: "emocional" },
+            { text: "Tenho dificuldade de identificar e nomear o que estou sentindo em momentos de crise.", module: "emocional" }
+        ];
+
+        // Opções de Resposta (Peso de 0 a 3, onde maior peso = maior bloqueio)
+        const responseOptions = [
+            { label: "Nunca / Discordo Totalmente", value: 0 },
+            { label: "Raramente / Discordo em Parte", value: 1 },
+            { label: "Às vezes / Concordo em Parte", value: 2 },
+            { label: "Sempre / Concordo Totalmente", value: 3 }
+        ];
+
+        // Estado da Aplicação
+        let userData = { name: "", email: "", age: "" };
+        let currentQuestionIndex = 0;
+        let answers = new Array(questions.length).fill(null);
+
+        // Funções de Inicialização e Validação
+        function startTest() {
+            const nameInput = document.getElementById('user-name');
+            const emailInput = document.getElementById('user-email');
+            const ageInput = document.getElementById('user-age');
+            const errorMsg = document.getElementById('start-error');
+
+            if (!nameInput.checkValidity() || !emailInput.checkValidity() || !ageInput.checkValidity()) {
+                errorMsg.classList.remove('hidden');
+                errorMsg.classList.add('fade-in');
+                return;
+            }
+
+            userData.name = nameInput.value.trim();
+            userData.email = emailInput.value.trim();
+            userData.age = ageInput.value.trim();
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('fade-in');
+            
+            renderQuestion();
+        }
+
+        // Renderização do Questionário
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            const modInfo = moduleConfig[q.module];
+            
+            // Atualiza Headers
+            document.getElementById('progress-text').innerText = `Pergunta ${currentQuestionIndex + 1} de ${questions.length}`;
+            document.getElementById('module-badge').innerText = modInfo.label;
+            
+            // Animação da barra de progresso
+            const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Animação de entrada do texto da pergunta
+            const qContainer = document.getElementById('question-container');
+            qContainer.classList.remove('fade-in');
+            void qContainer.offsetWidth; // trigger reflow
+            qContainer.classList.add('fade-in');
+
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('quiz-error').classList.add('hidden');
+
+            // Renderiza Opções
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            responseOptions.forEach((opt) => {
+                const btn = document.createElement('div');
+                const isSelected = answers[currentQuestionIndex] === opt.value;
+                
+                btn.className = `option p-4 rounded-xl text-center font-semibold text-gray-700 select-none ${isSelected ? 'selected' : 'bg-white'}`;
+                btn.innerText = opt.label;
+                btn.onclick = () => updateSelection(opt.value, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Controle do botão Anterior
+            document.getElementById('btn-prev').disabled = currentQuestionIndex === 0;
+            
+            // Muda texto do botão próximo na última pergunta
+            const btnNext = document.getElementById('btn-next');
+            if (currentQuestionIndex === questions.length - 1) {
+                btnNext.innerHTML = 'Finalizar e Ver Resultados <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                btnNext.classList.remove('btn-primary');
+                btnNext.classList.add('bg-gradient-to-r', 'from-emerald-500', 'to-teal-600');
+            } else {
+                btnNext.innerHTML = 'Próxima <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>';
+                btnNext.className = 'btn-primary px-6 md:px-8 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:opacity-90 shadow-md ml-auto';
+            }
+        }
+
+        // Atualização da Seleção
+        function updateSelection(value, selectedElement) {
+            answers[currentQuestionIndex] = value;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.classList.add('bg-white', 'text-gray-700');
+                opt.classList.remove('text-white');
+            });
+
+            selectedElement.classList.add('selected');
+            selectedElement.classList.remove('bg-white', 'text-gray-700');
+            
+            document.getElementById('quiz-error').classList.add('hidden');
+            
+            // Auto-avança após um breve atraso para UX fluida
+            setTimeout(() => {
+                nextQuestion();
+            }, 350);
+        }
+
+        // Navegação
+        function nextQuestion() {
+            if (answers[currentQuestionIndex] === null) {
+                const error = document.getElementById('quiz-error');
+                error.classList.remove('hidden');
+                error.classList.add('fade-in');
+                return;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                processResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        // Processamento Lógico de Resultados
+        function processResults() {
+            // Mostrar Loading
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            setTimeout(() => {
+                calculateAndShowResults();
+            }, 1200); // Falso delay para percepção de processamento complexo
+        }
+
+        function calculateAndShowResults() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('fade-in');
+            
+            document.getElementById('result-name').innerText = userData.name.split(' ')[0];
+
+            // Inicializa pontuações por módulo (Máximo por módulo = 5 perguntas * 3 = 15 pontos)
+            let scores = {};
+            let totalPoints = 0;
+            const maxPointsPerModule = 15;
+            const maxTotalPoints = questions.length * 3;
+
+            Object.keys(moduleConfig).forEach(key => scores[key] = 0);
+
+            // Soma os pontos
+            answers.forEach((ans, idx) => {
+                const mod = questions[idx].module;
+                scores[mod] += ans;
+                totalPoints += ans;
+            });
+
+            const chartsContainer = document.getElementById('charts-container');
+            const explanationsContainer = document.getElementById('dynamic-explanations');
+            chartsContainer.innerHTML = '';
+            explanationsContainer.innerHTML = '';
+
+            // Renderiza Barras e Textos Dinâmicos
+            Object.keys(moduleConfig).forEach(key => {
+                const mod = moduleConfig[key];
+                const score = scores[key];
+                const percentage = Math.round((score / maxPointsPerModule) * 100);
+                
+                // HTML da Barra
+                const barHtml = `
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm md:text-base font-bold text-gray-700">${mod.label}</span>
+                            <span class="text-sm font-bold text-gray-500">${percentage}%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-4 shadow-inner">
+                            <div class="fill ${mod.class}" data-percent="${percentage}%" style="width: 0%; transition-delay: 0.2s;"></div>
+                        </div>
+                    </div>
+                `;
+                chartsContainer.insertAdjacentHTML('beforeend', barHtml);
+
+                // Lógica de Interpretação Textual
+                let interpretation = "";
+                if (percentage >= 70) {
+                    interpretation = `<span class="text-red-600 font-bold">Bloqueio Crítico:</span> Atenção elevada necessária. `;
+                } else if (percentage >= 40) {
+                    interpretation = `<span class="text-yellow-600 font-bold">Bloqueio Moderado:</span> Afeta sua fluidez. `;
+                } else {
+                    interpretation = `<span class="text-green-600 font-bold">Área Fluida:</span> Bom nível de resolução. `;
+                }
+
+                const textHtml = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-50">
+                        <h4 class="font-bold text-gray-800 border-b border-gray-100 pb-2 mb-2">${mod.label}</h4>
+                        <p class="text-sm md:text-base text-gray-600">${interpretation} ${mod.desc}</p>
+                    </div>
+                `;
+                explanationsContainer.insertAdjacentHTML('beforeend', textHtml);
+            });
+
+            // Média Geral
+            const totalPercentage = Math.round((totalPoints / maxTotalPoints) * 100);
+            document.getElementById('total-score-text').innerText = `${totalPercentage}%`;
+            
+            // Anima as barras (trigger reflow)
+            setTimeout(() => {
+                document.querySelectorAll('#result-screen .fill').forEach((el) => {
+                    const pct = el.getAttribute('data-percent');
+                    el.style.width = pct;
+                });
+                document.getElementById('total-score-fill').style.width = `${totalPercentage}%`;
+            }, 100);
+        }
+
+        // Geração de PDF e Envio de E-mail
+        async function generateAndSendPDF() {
+            const btn = document.querySelector('.btn-result, .btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Processando...`;
+            btn.disabled = true;
+
+            try {
+                // 1. Capturar Elemento de Score como Imagem via html2canvas
+                const scoreSection = document.getElementById('score-section');
+                const canvas = await html2canvas(scoreSection, { 
+                    scale: 2,
+                    backgroundColor: "#ffffff",
+                    logging: false
+                });
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+                // 2. Inicializar jsPDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 15;
+                let y = 20;
+
+                // Estilos Base
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(31, 41, 55); // gray-800
+                
+                // Título
+                doc.setFontSize(22);
+                doc.text("Relatório de Bloqueios Emocionais", pageWidth / 2, y, { align: 'center' });
+                y += 10;
+                
+                // Subtítulo / Dados do Usuário
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(75, 85, 99); // gray-600
+                doc.text(`Gerado para: ${userData.name}`, margin, y);
+                y += 6;
+                doc.text(`Idade: ${userData.age} anos | E-mail: ${userData.email}`, margin, y);
+                y += 10;
+
+                // Adicionar Imagem dos Gráficos capturada
+                const imgWidth = pageWidth - (margin * 2);
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                doc.addImage(imgData, 'JPEG', margin, y, imgWidth, imgHeight);
+                y += imgHeight + 15;
+
+                // Tratamento de quebra de página
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                // Descrições
+                doc.setFontSize(16);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(31, 41, 55);
+                doc.text("Interpretação por Área:", margin, y);
+                y += 10;
+
+                doc.setFontSize(11);
+                doc.setFont("helvetica", "normal");
+                
+                const explanations = document.querySelectorAll('#dynamic-explanations > div');
+                explanations.forEach(div => {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    
+                    const title = div.querySelector('h4').innerText;
+                    const textContent = div.querySelector('p').innerText;
+
+                    doc.setFont("helvetica", "bold");
+                    doc.text(title, margin, y);
+                    y += 6;
+                    
+                    doc.setFont("helvetica", "normal");
+                    const splitText = doc.splitTextToSize(textContent, pageWidth - (margin * 2));
+                    doc.text(splitText, margin, y, { lineHeightFactor: 1.5 });
+                    y += (splitText.length * 6) + 6;
+                });
+
+                // Rodapé
+                if (y > 270) { doc.addPage(); y = 20; }
+                y += 10;
+                doc.setFont("times", "italic");
+                doc.setTextColor(2, 132, 199); // blue-600 do Tailwind para assinatura
+                doc.setFontSize(24);
+                doc.text("Instituto Impulso Coaching", pageWidth / 2, y, { align: 'center' });
+
+                // 3. Salvar PDF
+                const safeName = userData.name.replace(/[^a-zA-Z0-9]/g, '_');
+                doc.save(`Analise_Emocional_${safeName}.pdf`);
+
+                // 4. Preparar e Acionar Mailto
+                // Revertendo o botão
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                const subject = encodeURIComponent(`Análise de Padrões Emocionais - ${userData.name}`);
+                const body = encodeURIComponent(
+                    `Olá equipe do Instituto Impulso,\n\n` +
+                    `Acabei de finalizar a Enquete de Bloqueios Emocionais.\n` +
+                    `Nome: ${userData.name}\n` +
+                    `Idade: ${userData.age}\n\n` +
+                    `⚠️ Lembrete para o usuário: Por favor, não se esqueça de ANEXAR o arquivo PDF gerado pelo sistema neste e-mail antes de enviar!\n\n` +
+                    `Fico no aguardo dos próximos passos.\n` +
+                    `Atenciosamente,\n${userData.name}`
+                );
+
+                // Delay curto para garantir que o PDF comece a baixar antes de mudar o foco
+                setTimeout(() => {
+                    window.location.href = `mailto:contato@institutoimpulso.com.br?subject=${subject}&body=${body}`;
+                }, 1000);
+
+            } catch (error) {
+                console.error("Erro ao gerar PDF:", error);
+                alert("Ocorreu um erro ao tentar gerar o PDF. Por favor, tente novamente.");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

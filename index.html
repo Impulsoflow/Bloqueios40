@@ -949,14 +949,34 @@
             let lastError = null;
             for (let attempt = 1; attempt <= 3; attempt++) {
                 try {
-                    await fetch(WEB_APP_URL, {
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 120000);
+                    const response = await fetch(WEB_APP_URL, {
                         method: "POST",
-                        mode: "no-cors",
+                        redirect: "follow",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(payload),
-                        keepalive: false
+                        signal: controller.signal
                     });
-                    return { ok: true, transport: "apps-script-post", attempt };
+                    clearTimeout(timer);
+
+                    const text = await response.text();
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 250)}`);
+                    }
+
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (parseError) {
+                        throw new Error("O Google Apps Script respondeu em formato inválido. Verifique a implantação do backend.");
+                    }
+
+                    if (data.ok !== true || data.saved !== true) {
+                        throw new Error(data.message || "O Google Apps Script não confirmou o salvamento do resultado.");
+                    }
+
+                    return { ...data, attempt };
                 } catch (error) {
                     lastError = error;
                     if (attempt < 3) {
@@ -965,7 +985,7 @@
                     }
                 }
             }
-            throw lastError || new Error("Não foi possível enviar o relatório ao sistema.");
+            throw lastError || new Error("Não foi possível confirmar o salvamento do relatório.");
         }
         async function startTest(button) {
             const name = document.getElementById('name').value.trim();
@@ -1181,8 +1201,15 @@
                 `Média Total: ${averageScore}%`
             ].join(" | ");
 
+            const submissionId = (window.crypto && window.crypto.randomUUID)
+                ? window.crypto.randomUUID()
+                : `bloqueios-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
             const payload = {
                 apiKey: API_KEY,
+                submissionId,
+                respondidoEm: new Date().toISOString(),
+                instrumento: "Bloqueios Emocionais",
                 testId: "bloqueios_emocionais_40_v2",
                 nome: name,
                 email,
@@ -1197,6 +1224,7 @@
                 pctC: scores.Depressao,
                 chartImgData: resultsSummary,
                 scoresJson: JSON.stringify(scores),
+                mediaTotal: averageScore,
                 pdfBase64: base64,
                 pdfFileName: pdfName,
                 sendEmail: true,
@@ -1205,9 +1233,10 @@
 
             setAutoSendStatus("⏳ Salvando resultado e enviando seu relatório automaticamente...", "pending");
             try {
-                await postResultToScript(payload);
+                const serverResult = await postResultToScript(payload);
+                console.log("Resultado confirmado pelo Apps Script:", serverResult);
                 doc.save(pdfName);
-                setAutoSendStatus("✅ Resultado enviado ao sistema Impulso e PDF processado.", "success");
+                setAutoSendStatus(`✅ Resultado salvo no sistema Impulso${serverResult.emailSent ? " e relatório enviado por e-mail" : ""}.`, "success");
                 const success = document.getElementById("final-success-message");
                 if (success) success.classList.remove("hidden");
             } catch (error) {

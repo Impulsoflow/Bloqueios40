@@ -9,7 +9,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
-            background: linear-gradient(135deg, #a5f3fc, #06b6d4);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 28%, transparent 60%),
+                linear-gradient(180deg, #eef7ff 0%, #dfeeff 36%, #f8fbff 100%);
+        }
+        .page-shell {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(186, 219, 255, 0.75);
+            box-shadow: 0 24px 60px rgba(24, 58, 117, 0.12);
         }
         .option {
             transition: all 0.3s ease;
@@ -111,16 +120,7 @@
         .module-procrastinacao-bg { background-color: #fff2cc; }
         .module-timidez-bg { background-color: #d1fae5; }
         .module-vitimismo-bg { background-color: #ede9fe; }
-        .module-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            text-align: center;
-            padding: 6px 12px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .module-title { display: none; }
         .module-pais { background: linear-gradient(135deg, #ef4444, #b91c1c); }
         .module-rejeicao { background: linear-gradient(135deg, #f59e0b, #b45309); }
         .module-autoimagem { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
@@ -131,6 +131,10 @@
         .module-procrastinacao { background: linear-gradient(135deg, #f97316, #b45309); }
         .module-timidez { background: linear-gradient(135deg, #10b981, #047857); }
         .module-vitimismo { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        #questions .question .flex.justify-between.mt-3,
+        #questions .question .flex.justify-end.mt-3 {
+            display: none;
+        }
         /* Dicas SUPER VIVAS */
         .tips-highlight {
             animation: tipsPulse 2s infinite alternate;
@@ -148,43 +152,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-        <h2 class="text-3xl sm:text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600 mb-2">Impulso Coaching</h2>
-        <h1 class="text-4xl sm:text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 mb-2">Enquete de Bloqueios Emocionais</h1>
-        <p class="text-center text-gray-600 mb-6">Descubra Possíveis Barreiras Emocionais</p>
+    <div class="page-shell max-w-3xl w-full rounded-3xl p-6 sm:p-8">
+        <div class="text-center mb-7">
+            <img src="impulso-logo.png" alt="Logo Impulso Coaching" class="mx-auto w-24 sm:w-28 mb-4" />
+            <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.35em] text-slate-500">Instituto Impulso IE™ de Liderança</p>
+            <p class="mt-2 text-sm sm:text-base font-bold text-blue-700">A mudança pode acontecer em um instante</p>
+            <h1 class="mt-6 text-3xl sm:text-4xl font-extrabold text-slate-800">Enquete de Bloqueios Emocionais</h1>
+            <p class="mt-2 text-sm text-slate-500">Preencha os dados, responda com sinceridade e avance automaticamente.</p>
+        </div>
         <div id="form-section">
-            <div class="bg-gradient-to-r from-blue-100 to-teal-100 p-6 rounded-lg mb-6 shadow-md">
+            <div class="bg-white/90 border border-slate-200 p-6 rounded-2xl mb-6 shadow-sm">
                 <p class="text-xl font-semibold text-gray-800 mb-4">Dados Pessoais</p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div class="input-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        <input type="text" id="name" placeholder="Nome" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                        <input type="text" id="name" placeholder="Nome e Sobrenome *" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
                     </div>
                     <div class="input-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <input type="number" id="age" placeholder="Idade" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                        <input type="tel" id="whatsapp" inputmode="tel" placeholder="WhatsApp *" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                    </div>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <input type="email" id="email" placeholder="E-mail *" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
                     </div>
                     <div class="input-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        <input type="text" id="occupation" placeholder="Profissão" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                        <input type="number" id="age" placeholder="Idade *" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
                     </div>
                     <div class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.4 7.2-1.7 1.7a11 11 0 005.5 5.5l1.7-1.7L21 21v2h-1C10.6 23 3 15.4 3 6V5z"/></svg>
-                        <input type="tel" id="whatsapp" inputmode="tel" placeholder="WhatsApp com DDD" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <input type="text" id="occupation" placeholder="Profissão *" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Escolaridade *</label>
+                        <select id="education" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                            <option value="">Selecione...</option>
+                            <option value="Ensino Médio Incompleto">Ensino Médio Incompleto</option>
+                            <option value="Ensino Médio Completo">Ensino Médio Completo</option>
+                            <option value="Ensino Superior Incompleto">Ensino Superior Incompleto</option>
+                            <option value="Ensino Superior Completo">Ensino Superior Completo</option>
+                            <option value="Pós-Graduação / MBA">Pós-Graduação / MBA</option>
+                            <option value="Mestrado / Doutorado">Mestrado / Doutorado</option>
+                        </select>
                     </div>
                 </div>
-                <div class="input-icon mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <input type="email" id="email" placeholder="Email" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
-                </div>
                 <!-- ✨ Dicas vivas -->
-                <div class="tips-highlight bg-gradient-to-r from-blue-100 to-teal-100 p-6 rounded-lg mb-6 shadow-md">
-                    <p class="text-xl font-semibold text-gray-800 mb-4">Dicas para o teste:</p>
+                <div class="tips-highlight bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl mb-6 shadow-sm">
+                    <p class="text-xl font-semibold text-gray-800 mb-4">Como responder:</p>
                     <ul class="list-disc list-inside text-gray-700 space-y-2">
-                        <li>Seja sincera(o).</li>
-                        <li>Escolha um momento tranquilo para fazer o teste.</li>
-                        <li>Não pense muito, a primeira resposta geralmente será a mais correta.</li>
-                        <li>Responda pensando em quem você é e não em quem gostaria de ser.</li>
+                        <li>Responda sem tentar parecer melhor do que está hoje.</li>
+                        <li>Escolha a alternativa que mais se aproxima da sua realidade.</li>
+                        <li>Não fique travando nas perguntas, o teste avança sozinho.</li>
+                        <li>As questões serão misturadas para reduzir tendência nas respostas.</li>
                     </ul>
                 </div>
                 <div class="flex justify-end">
@@ -193,12 +213,11 @@
             </div>
         </div>
         <div id="test-section" class="hidden">
-            <p class="text-center text-gray-600 mb-4 text-lg">Selecione a opção que melhor descreve sua experiência! (Escolha apenas uma por pergunta)</p>
+            <p class="text-center text-gray-600 mb-4 text-lg">Selecione a opção que melhor descreve sua experiência.</p>
             <div id="questions">
                 <!-- === TODAS AS 40 PERGUNTAS COM LAYOUT POR MÓDULO (do 1760585676253.txt) === -->
                 <!-- PAIS DITADORES -->
-                <div class="question active module-pais-bg p-4 rounded-lg shadow-sm" data-q="1">
-                    <div class="module-title module-pais">PAIS DITADORES</div>
+                <div class="question active module-pais-bg p-4 rounded-lg shadow-sm" data-q="1" data-module="Pais">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">01/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Seu lar, quando criança, era um ambiente seguro?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -212,8 +231,7 @@
                         <button onclick="nextQuestion(1)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="2">
-                    <div class="module-title module-pais">PAIS DITADORES</div>
+                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="2" data-module="Pais">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">02/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Seus pais eram autoritários?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -228,8 +246,7 @@
                         <button onclick="nextQuestion(2)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="3">
-                    <div class="module-title module-pais">PAIS DITADORES</div>
+                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="3" data-module="Pais">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">03/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente pressionado(a) a agradar seus pais?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -244,8 +261,7 @@
                         <button onclick="nextQuestion(3)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="4">
-                    <div class="module-title module-pais">PAIS DITADORES</div>
+                <div class="question hidden module-pais-bg p-4 rounded-lg shadow-sm" data-q="4" data-module="Pais">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">04/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem medo de confrontar seus pais?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -261,8 +277,7 @@
                     </div>
                 </div>
                 <!-- REJEIÇÃO -->
-                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="5">
-                    <div class="module-title module-rejeicao">REJEIÇÃO</div>
+                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="5" data-module="Rejeicao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">05/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente rejeitado(a) pelos outros?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -277,8 +292,7 @@
                         <button onclick="nextQuestion(5)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="6">
-                    <div class="module-title module-rejeicao">REJEIÇÃO</div>
+                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="6" data-module="Rejeicao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">06/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem dificuldade em manter relacionamentos?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -293,8 +307,7 @@
                         <button onclick="nextQuestion(6)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="7">
-                    <div class="module-title module-rejeicao">REJEIÇÃO</div>
+                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="7" data-module="Rejeicao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">07/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você teme ser abandonado(a)?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -309,8 +322,7 @@
                         <button onclick="nextQuestion(7)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="8">
-                    <div class="module-title module-rejeicao">REJEIÇÃO</div>
+                <div class="question hidden module-rejeicao-bg p-4 rounded-lg shadow-sm" data-q="8" data-module="Rejeicao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">08/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você já se sentiu pequeno(a) demais para receber amor?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -326,8 +338,7 @@
                     </div>
                 </div>
                 <!-- AUTOIMAGEM -->
-                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="9">
-                    <div class="module-title module-autoimagem">AUTOIMAGEM</div>
+                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="9" data-module="Autoimagem">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">09/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você deixa os outros decidirem por você?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -342,8 +353,7 @@
                         <button onclick="nextQuestion(9)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="10">
-                    <div class="module-title module-autoimagem">AUTOIMAGEM</div>
+                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="10" data-module="Autoimagem">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">10/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você duvida do seu próprio valor?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -358,8 +368,7 @@
                         <button onclick="nextQuestion(10)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="11">
-                    <div class="module-title module-autoimagem">AUTOIMAGEM</div>
+                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="11" data-module="Autoimagem">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">11/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se compara com os outros?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -374,8 +383,7 @@
                         <button onclick="nextQuestion(11)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="12">
-                    <div class="module-title module-autoimagem">AUTOIMAGEM</div>
+                <div class="question hidden module-autoimagem-bg p-4 rounded-lg shadow-sm" data-q="12" data-module="Autoimagem">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">12/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente inadequado(a)?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -391,8 +399,7 @@
                     </div>
                 </div>
                 <!-- DEPRESSÃO E ANSIEDADE -->
-                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="13">
-                    <div class="module-title module-depressao">DEPRESSÃO E ANSIEDADE</div>
+                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="13" data-module="Depressao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">13/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você vive preocupado(a) com o passado?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -407,8 +414,7 @@
                         <button onclick="nextQuestion(13)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="14">
-                    <div class="module-title module-depressao">DEPRESSÃO E ANSIEDADE</div>
+                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="14" data-module="Depressao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">14/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem dificuldade em perdoar?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -423,8 +429,7 @@
                         <button onclick="nextQuestion(14)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="15">
-                    <div class="module-title module-depressao">DEPRESSÃO E ANSIEDADE</div>
+                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="15" data-module="Depressao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">15/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se preocupa excessivamente com o futuro?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -439,8 +444,7 @@
                         <button onclick="nextQuestion(15)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="16">
-                    <div class="module-title module-depressao">DEPRESSÃO E ANSIEDADE</div>
+                <div class="question hidden module-depressao-bg p-4 rounded-lg shadow-sm" data-q="16" data-module="Depressao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">16/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente ansioso(a) sem motivo aparente?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -456,8 +460,7 @@
                     </div>
                 </div>
                 <!-- CULPA -->
-                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="17">
-                    <div class="module-title module-culpa">CULPA</div>
+                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="17" data-module="Culpa">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">17/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você costuma pegar para si o problema de outros?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -472,8 +475,7 @@
                         <button onclick="nextQuestion(17)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="18">
-                    <div class="module-title module-culpa">CULPA</div>
+                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="18" data-module="Culpa">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">18/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se acha na obrigação de resolver todos os problemas?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -488,8 +490,7 @@
                         <button onclick="nextQuestion(18)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="19">
-                    <div class="module-title module-culpa">CULPA</div>
+                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="19" data-module="Culpa">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">19/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se prejudica para manter a sua palavra?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -504,8 +505,7 @@
                         <button onclick="nextQuestion(19)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="20">
-                    <div class="module-title module-culpa">CULPA</div>
+                <div class="question hidden module-culpa-bg p-4 rounded-lg shadow-sm" data-q="20" data-module="Culpa">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">20/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente culpado quando comete algum erro?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -521,8 +521,7 @@
                     </div>
                 </div>
                 <!-- CRÍTICAS -->
-                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="21">
-                    <div class="module-title module-criticas">CRÍTICAS</div>
+                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="21" data-module="Criticas">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">21/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você gosta de entrar em discussões?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -537,8 +536,7 @@
                         <button onclick="nextQuestion(21)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="22">
-                    <div class="module-title module-criticas">CRÍTICAS</div>
+                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="22" data-module="Criticas">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">22/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você gosta de falar dos outros?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -553,8 +551,7 @@
                         <button onclick="nextQuestion(22)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="23">
-                    <div class="module-title module-criticas">CRÍTICAS</div>
+                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="23" data-module="Criticas">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">23/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você gosta de fazer críticas?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -569,8 +566,7 @@
                         <button onclick="nextQuestion(23)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="24">
-                    <div class="module-title module-criticas">CRÍTICAS</div>
+                <div class="question hidden module-criticas-bg p-4 rounded-lg shadow-sm" data-q="24" data-module="Criticas">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">24/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem mania de ser perfeccionista?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -586,8 +582,7 @@
                     </div>
                 </div>
                 <!-- ESCASSEZ -->
-                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="25">
-                    <div class="module-title module-escassez">ESCASSEZ</div>
+                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="25" data-module="Escassez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">25/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Sua família já passou por muita falta de recursos?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -602,8 +597,7 @@
                         <button onclick="nextQuestion(25)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="26">
-                    <div class="module-title module-escassez">ESCASSEZ</div>
+                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="26" data-module="Escassez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">26/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você pensa mil vezes antes de comprar qualquer coisa?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -618,8 +612,7 @@
                         <button onclick="nextQuestion(26)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="27">
-                    <div class="module-title module-escassez">ESCASSEZ</div>
+                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="27" data-module="Escassez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">27/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você já foi pão-duro, mesquinho com outras pessoas, amigos ou familares?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -634,8 +627,7 @@
                         <button onclick="nextQuestion(27)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="28">
-                    <div class="module-title module-escassez">ESCASSEZ</div>
+                <div class="question hidden module-escassez-bg p-4 rounded-lg shadow-sm" data-q="28" data-module="Escassez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">28/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você sempre tem dinheiro disponível na carteira ou conta corrente?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -651,8 +643,7 @@
                     </div>
                 </div>
                 <!-- PROCRASTINAÇÃO -->
-                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="29">
-                    <div class="module-title module-procrastinacao">PROCRASTINAÇÃO</div>
+                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="29" data-module="Procrastinacao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">29/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Com que frequência você usa a frase: "não preciso fazer hoje o que eu posso deixar para amanhã"?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -667,8 +658,7 @@
                         <button onclick="nextQuestion(29)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="30">
-                    <div class="module-title module-procrastinacao">PROCRASTINAÇÃO</div>
+                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="30" data-module="Procrastinacao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">30/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Como você escolhe suas prioridades?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -683,8 +673,7 @@
                         <button onclick="nextQuestion(30)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="31">
-                    <div class="module-title module-procrastinacao">PROCRASTINAÇÃO</div>
+                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="31" data-module="Procrastinacao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">31/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você costuma cumprir aquilo que fala?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -699,8 +688,7 @@
                         <button onclick="nextQuestion(31)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="32">
-                    <div class="module-title module-procrastinacao">PROCRASTINAÇÃO</div>
+                <div class="question hidden module-procrastinacao-bg p-4 rounded-lg shadow-sm" data-q="32" data-module="Procrastinacao">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">32/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você costuma cumprir prazos?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -716,8 +704,7 @@
                     </div>
                 </div>
                 <!-- TIMIDEZ -->
-                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="33">
-                    <div class="module-title module-timidez">TIMIDEZ</div>
+                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="33" data-module="Timidez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">33/40</h3>
                     <p class="text-gray-700 mb-4 text-center">A timidez é um tabu pra você?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -732,8 +719,7 @@
                         <button onclick="nextQuestion(33)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="34">
-                    <div class="module-title module-timidez">TIMIDEZ</div>
+                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="34" data-module="Timidez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">34/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você já perdeu oportunidades por ser muito tímido?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -748,8 +734,7 @@
                         <button onclick="nextQuestion(34)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="35">
-                    <div class="module-title module-timidez">TIMIDEZ</div>
+                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="35" data-module="Timidez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">35/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se acha uma pessoa introvertida?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -764,8 +749,7 @@
                         <button onclick="nextQuestion(35)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="36">
-                    <div class="module-title module-timidez">TIMIDEZ</div>
+                <div class="question hidden module-timidez-bg p-4 rounded-lg shadow-sm" data-q="36" data-module="Timidez">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">36/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem dificuldades para tirar fotos e gravar vídeos?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -781,8 +765,7 @@
                     </div>
                 </div>
                 <!-- VITIMISMO -->
-                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="37">
-                    <div class="module-title module-vitimismo">VITIMISMO</div>
+                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="37" data-module="Vitimismo">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">37/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você costuma se achar o patinho feio?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -797,8 +780,7 @@
                         <button onclick="nextQuestion(37)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="38">
-                    <div class="module-title module-vitimismo">VITIMISMO</div>
+                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="38" data-module="Vitimismo">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">38/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você se sente culpado por todas as coisas que dão errado?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -813,8 +795,7 @@
                         <button onclick="nextQuestion(38)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="39">
-                    <div class="module-title module-vitimismo">VITIMISMO</div>
+                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="39" data-module="Vitimismo">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">39/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem necessidade de aprovação?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -829,8 +810,7 @@
                         <button onclick="nextQuestion(39)" class="btn-primary text-white px-4 py-2 rounded-lg transition shadow-md">Próxima</button>
                     </div>
                 </div>
-                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="40">
-                    <div class="module-title module-vitimismo">VITIMISMO</div>
+                <div class="question hidden module-vitimismo-bg p-4 rounded-lg shadow-sm" data-q="40" data-module="Vitimismo">
                     <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">40/40</h3>
                     <p class="text-gray-700 mb-4 text-center">Você tem problema em confiar em pessoas?</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -933,67 +913,53 @@
     <script src="https://impulso-pesquisas-admin.prrogeriobraga.chatgpt.site/access-control.js"></script>
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzUpg5e7Hx2qlPqDymrGz1lTkHQJZcOcU2M9TN4dlFD8qL1aXPsa1VkdjX_JikkfFBHw/exec";
-        const API_KEY = "2026Impulso$";
         let currentQ = 1;
         const totalQ = 40;
+        const API_KEY = "2026Impulso$";
+        let shuffledQuestions = [];
 
-        function setAutoSendStatus(message, type = "pending") {
-            const el = document.getElementById("auto-send-status");
-            if (!el) return;
-            el.textContent = message;
-            el.className = "mt-5 text-center text-sm font-semibold " +
-                (type === "success" ? "text-emerald-700" : type === "error" ? "text-red-700" : "text-blue-700");
+        function shuffleArray(items) {
+            const copy = items.slice();
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function prepareQuestions() {
+            const container = document.getElementById('questions');
+            shuffledQuestions = shuffleArray(Array.from(container.querySelectorAll('.question')));
+            shuffledQuestions.forEach((question, index) => {
+                question.classList.remove('hidden', 'active');
+                if (index === 0) {
+                    question.classList.add('active');
+                } else {
+                    question.classList.add('hidden');
+                }
+                container.appendChild(question);
+            });
+            showQuestion(0);
         }
 
         async function postResultToScript(payload) {
-            let lastError = null;
-            for (let attempt = 1; attempt <= 3; attempt++) {
-                try {
-                    const controller = new AbortController();
-                    const timer = setTimeout(() => controller.abort(), 120000);
-                    const response = await fetch(WEB_APP_URL, {
-                        method: "POST",
-                        redirect: "follow",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(payload),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timer);
-
-                    const text = await response.text();
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 250)}`);
-                    }
-
-                    let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (parseError) {
-                        throw new Error("O Google Apps Script respondeu em formato inválido. Verifique a implantação do backend.");
-                    }
-
-                    if (data.ok !== true || data.saved !== true) {
-                        throw new Error(data.message || "O Google Apps Script não confirmou o salvamento do resultado.");
-                    }
-
-                    return { ...data, attempt };
-                } catch (error) {
-                    lastError = error;
-                    if (attempt < 3) {
-                        setAutoSendStatus(`⚠️ Reenviando relatório ao sistema (tentativa ${attempt + 1}/3)...`, "pending");
-                        await new Promise(resolve => setTimeout(resolve, 1800));
-                    }
-                }
-            }
-            throw lastError || new Error("Não foi possível confirmar o salvamento do relatório.");
+            const response = await fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            });
+            return response;
         }
+
         async function startTest(button) {
             const name = document.getElementById('name').value.trim();
             const age = document.getElementById('age').value.trim();
             const occupation = document.getElementById('occupation').value.trim();
             const email = document.getElementById('email').value.trim();
             const whatsapp = document.getElementById('whatsapp').value.trim();
-            if (!(name && age && occupation && email && whatsapp)) {
+            const education = document.getElementById('education').value.trim();
+            if (!(name && age && occupation && email && whatsapp && education)) {
                 alert('Por favor, preencha todos os campos antes de iniciar a enquete.');
                 return;
             }
@@ -1010,7 +976,7 @@
                 onAllowed: function () {
                     document.getElementById('form-section').classList.add('hidden');
                     document.getElementById('test-section').classList.remove('hidden');
-                    updateSelection(1);
+                    prepareQuestions();
                 }
             });
         }
@@ -1022,30 +988,49 @@
                 opt.classList.toggle('selected', radio.checked);
             });
         }
-        function nextQuestion(q) {
-            if (document.querySelector(`input[name="q${q}"]:checked`)) {
-                document.querySelector(`[data-q="${q}"]`).classList.add('hidden');
-                document.querySelector(`[data-q="${q}"]`).classList.remove('active');
-                currentQ = q + 1;
-                if (currentQ <= totalQ) {
-                    document.querySelector(`[data-q="${currentQ}"]`).classList.remove('hidden');
-                    document.querySelector(`[data-q="${currentQ}"]`).classList.add('active');
-                    updateSelection(currentQ);
-                }
-            } else {
-                alert('Por favor, selecione uma opção antes de continuar.');
+        function getVisibleQuestions() {
+            return Array.from(document.querySelectorAll('#questions .question')).filter(question => !question.classList.contains('hidden'));
+        }
+        function showQuestion(index) {
+            const questions = shuffledQuestions.length ? shuffledQuestions : getVisibleQuestions();
+            if (!questions[index]) return false;
+            questions.forEach((question, qIndex) => {
+                question.classList.toggle('hidden', qIndex !== index);
+                question.classList.toggle('active', qIndex === index);
+            });
+            currentQ = index + 1;
+            return true;
+        }
+        function goNextFromCurrent() {
+            const questions = shuffledQuestions.length ? shuffledQuestions : getVisibleQuestions();
+            if (!questions.length) return;
+            if (currentQ >= questions.length) {
+                showResult();
+                return;
+            }
+            showQuestion(currentQ);
+            const activeQuestion = questions[currentQ];
+            if (activeQuestion) {
+                const firstRadio = activeQuestion.querySelector('input[type="radio"]:checked');
+                if (firstRadio) updateSelection(parseInt(firstRadio.name.replace('q', ''), 10));
             }
         }
+        function nextQuestion(q) {
+            if (!document.querySelector(`input[name="q${q}"]:checked`)) {
+                alert('Por favor, selecione uma opção antes de continuar.');
+                return;
+            }
+            goNextFromCurrent();
+        }
         function prevQuestion(q) {
-            document.querySelector(`[data-q="${q}"]`).classList.add('hidden');
-            document.querySelector(`[data-q="${q}"]`).classList.remove('active');
-            currentQ = q - 1;
-            document.querySelector(`[data-q="${currentQ}"]`).classList.remove('hidden');
-            document.querySelector(`[data-q="${currentQ}"]`).classList.add('active');
-            updateSelection(currentQ);
+            const questions = shuffledQuestions.length ? shuffledQuestions : getVisibleQuestions();
+            if (!questions.length) return;
+            const previous = Math.max(0, currentQ - 2);
+            if (previous < 0) return;
+            showQuestion(previous);
         }
         async function showResult() {
-            if (document.querySelector(`input[name="q40"]:checked`)) {
+            if (document.querySelectorAll('#questions input[type="radio"]:checked').length === totalQ) {
                 let scores = { 
                     Pais: 0, Rejeicao: 0, Autoimagem: 0, Depressao: 0, Culpa: 0,
                     Criticas: 0, Escassez: 0, Procrastinacao: 0, Timidez: 0, Vitimismo: 0
@@ -1066,12 +1051,14 @@
                     Pais: 16, Rejeicao: 16, Autoimagem: 16, Depressao: 16, Culpa: 16,
                     Criticas: 16, Escassez: 16, Procrastinacao: 16, Timidez: 16, Vitimismo: 16
                 };
-                for (let i = 1; i <= 40; i++) {
-                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                    if (selected && questionMapping[i]) {
-                        scores[questionMapping[i]] += parseInt(selected.value);
+                const questionElements = Array.from(document.querySelectorAll('#questions .question'));
+                questionElements.forEach((question) => {
+                    const module = question.dataset.module;
+                    const selected = question.querySelector('input[type="radio"]:checked');
+                    if (selected && scores.hasOwnProperty(module)) {
+                        scores[module] += parseInt(selected.value, 10);
                     }
-                }
+                });
                 Object.keys(scores).forEach(k => {
                     scores[k] = Math.round((scores[k] / maxScores[k]) * 100);
                 });
@@ -1130,12 +1117,14 @@
             const age = document.getElementById('age').value.trim();
             const occupation = document.getElementById('occupation').value.trim();
             const email = document.getElementById('email').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            const education = document.getElementById('education').value.trim();
             // Cabeçalho
             doc.setFontSize(16);
             doc.text('Enquete de Bloqueios Emocionais - Impulso Coaching', pageWidth / 2, y, { align: 'center' });
             y += 10;
             doc.setFontSize(10);
-            doc.text(`Nome: ${name}, Idade: ${age}, Profissão: ${occupation}, Email: ${email}`, pageWidth / 2, y, { align: 'center', maxWidth: 180 });
+            doc.text(`Nome: ${name}, Idade: ${age}, Profissão: ${occupation}, Escolaridade: ${education}, Email: ${email}`, pageWidth / 2, y, { align: 'center', maxWidth: 180 });
             y += 12;
             // Explicação sobre autoanálise
             doc.setFontSize(12);
@@ -1185,21 +1174,7 @@
             doc.setFontSize(10);
             doc.text('Rogério Braga - impulsoflow@gmail.com', pageWidth - 20, 290, { align: 'right' });
             const pdfName = `resultado_enquete_bloqueios_emocionais_${name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}.pdf`;
-            const whatsapp = document.getElementById('whatsapp').value.trim();
-            const base64 = doc.output("datauristring").split(",")[1];
-            const resultsSummary = [
-                `Pais Ditadores: ${scores.Pais}%`,
-                `Rejeição: ${scores.Rejeicao}%`,
-                `Autoimagem: ${scores.Autoimagem}%`,
-                `Depressão e Ansiedade: ${scores.Depressao}%`,
-                `Culpa: ${scores.Culpa}%`,
-                `Críticas: ${scores.Criticas}%`,
-                `Escassez: ${scores.Escassez}%`,
-                `Procrastinação: ${scores.Procrastinacao}%`,
-                `Timidez: ${scores.Timidez}%`,
-                `Vitimismo: ${scores.Vitimismo}%`,
-                `Média Total: ${averageScore}%`
-            ].join(" | ");
+            doc.save(pdfName);
 
             const submissionId = (window.crypto && window.crypto.randomUUID)
                 ? window.crypto.randomUUID()
@@ -1216,6 +1191,7 @@
                 whatsapp,
                 idade: age,
                 profissao: occupation,
+                escolaridade: education,
                 perfilPrimario: `Profissão: ${occupation} | Idade: ${age}`,
                 perfilSecundario: `Bloqueio Médio: ${averageScore}%`,
                 pctD: scores.Pais,
@@ -1252,10 +1228,11 @@
                     radio.checked = true;
                     const qNum = parseInt(radio.name.match(/\d+/)[0]);
                     updateSelection(qNum);
+                    setTimeout(() => goNextFromCurrent(), 180);
                 }
             });
         });
-        updateSelection(1);
+        prepareQuestions();
     </script>
 </body>
 </html>

@@ -168,6 +168,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         <input type="text" id="occupation" placeholder="Profissão" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
                     </div>
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.4 7.2-1.7 1.7a11 11 0 005.5 5.5l1.7-1.7L21 21v2h-1C10.6 23 3 15.4 3 6V5z"/></svg>
+                        <input type="tel" id="whatsapp" inputmode="tel" placeholder="WhatsApp com DDD" class="border border-teal-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gradient-to-r from-white to-teal-50">
+                    </div>
                 </div>
                 <div class="input-icon mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -184,7 +188,7 @@
                     </ul>
                 </div>
                 <div class="flex justify-end">
-                    <button onclick="startTest()" class="btn-start text-white px-6 py-3 rounded-lg transition shadow-md">Iniciar Enquete</button>
+                    <button onclick="startTest(this)" class="btn-start text-white px-6 py-3 rounded-lg transition shadow-md">Iniciar Enquete</button>
                 </div>
             </div>
         </div>
@@ -921,21 +925,36 @@
             </div>
         </div>
     </div>
+    <script src="https://impulso-pesquisas-admin.prrogeriobraga.chatgpt.site/access-control.js"></script>
     <script>
         let currentQ = 1;
         const totalQ = 40;
-        function startTest() {
+        async function startTest(button) {
             const name = document.getElementById('name').value.trim();
             const age = document.getElementById('age').value.trim();
             const occupation = document.getElementById('occupation').value.trim();
             const email = document.getElementById('email').value.trim();
-            if (name && age && occupation && email) {
-                document.getElementById('form-section').classList.add('hidden');
-                document.getElementById('test-section').classList.remove('hidden');
-                updateSelection(1);
-            } else {
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            if (!(name && age && occupation && email && whatsapp)) {
                 alert('Por favor, preencha todos os campos antes de iniciar a enquete.');
+                return;
             }
+            if (!window.ImpulsoResearchAccess) {
+                alert('Não foi possível carregar o controle de acesso. Atualize a página e tente novamente.');
+                return;
+            }
+            await window.ImpulsoResearchAccess.start({
+                researchId: 'bloqueios-emocionais',
+                name,
+                email,
+                whatsapp,
+                button,
+                onAllowed: function () {
+                    document.getElementById('form-section').classList.add('hidden');
+                    document.getElementById('test-section').classList.remove('hidden');
+                    updateSelection(1);
+                }
+            });
         }
         function updateSelection(q) {
             const question = document.querySelector(`[data-q="${q}"]`);

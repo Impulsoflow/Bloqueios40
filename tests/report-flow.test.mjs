@@ -29,3 +29,11 @@ test("only reports success after a readable backend confirmation", () => {
   assert.match(page, /data=await response\.json\(\)/);
   assert.match(page, /data\.ok!==true/);
 });
+
+test("places the detailed ten-dimension map before the deep explanations", () => {
+  const mapPosition = page.indexOf('// MAPA COMPLETO LOGO NO INÍCIO');
+  const detailPosition = page.indexOf('// DETALHE DOS 3 PRINCIPAIS');
+  assert.ok(mapPosition > 0 && detailPosition > mapPosition);
+  assert.match(page, /drawDimensionSummary\(\(index\+1\)\+"\. "\+d\.label,value,d\.summary,y\)/);
+  assert.match(page, /Percentuais e resumo interpretativo de cada dimensão/);
+});

@@ -455,6 +455,22 @@
         const fill=Math.max(0,Math.min(contentW,contentW*(value/100)));doc.setFillColor(11,99,206);doc.roundedRect(margin,y,fill,5,2.5,2.5,"F");
         return y+10;
       }
+      function drawDimensionSummary(label,value,summary,y){
+        doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        const summaryLines=doc.splitTextToSize(safeText(summary),contentW-10);
+        const boxH=Math.max(22,15+summaryLines.length*4.1);
+        doc.setFillColor(248,252,255);doc.setDrawColor(216,231,251);
+        doc.roundedRect(margin,y,contentW,boxH,3,3,"FD");
+        doc.setTextColor(15,47,87);doc.setFont("helvetica","bold");doc.setFontSize(9);
+        doc.text(label,margin+5,y+6,{maxWidth:contentW-28});
+        doc.setTextColor(11,99,206);doc.setFontSize(11);doc.text(value+"%",pageW-margin-5,y+6,{align:"right"});
+        doc.setFillColor(230,238,252);doc.roundedRect(margin+5,y+9,contentW-10,3,1.5,1.5,"F");
+        const fill=Math.max(0,Math.min(contentW-10,(contentW-10)*(value/100)));
+        doc.setFillColor(11,99,206);doc.roundedRect(margin+5,y+9,fill,3,1.5,1.5,"F");
+        doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        doc.text(summaryLines,margin+5,y+17);
+        return y+boxH+4;
+      }
       function drawCycle(items,y){
         doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(6,59,122);doc.text("Ciclo provável do bloqueio",margin,y);y+=7;
         items.forEach((item,idx)=>{
@@ -494,6 +510,21 @@
       doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Índice Geral de Bloqueios: "+avg+"%",margin,y);y+=7;
       y=addParagraph("Este índice resume a intensidade média dos dez grupos avaliados. Ele não mede gravidade clínica; serve como referência comparativa para sua autoanálise.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
 
+      // MAPA COMPLETO LOGO NO INÍCIO
+      y=newPage("Mapa completo das 10 dimensões","Percentuais e resumo interpretativo de cada dimensão");
+      sorted.forEach(([key,value],index)=>{
+        const d=DIMENSIONS[key];
+        doc.setFont("helvetica","normal");doc.setFontSize(8.2);
+        const lines=doc.splitTextToSize(safeText(d.summary),contentW-10);
+        const requiredH=Math.max(22,15+lines.length*4.1)+4;
+        if(y+requiredH>278){
+          y=newPage("Mapa completo das 10 dimensões","Continuação da visão comparativa");
+        }
+        y=drawDimensionSummary((index+1)+". "+d.label,value,d.summary,y);
+      });
+      y+=2;
+      y=addParagraph("As pontuações indicam a frequência com que cada padrão apareceu nas respostas. Elas não representam diagnóstico ou gravidade clínica; servem para comparação e reflexão consciente.",margin,y,contentW,8.3,[71,85,105],"normal",4.3);
+
       // DETALHE DOS 3 PRINCIPAIS
       sorted.slice(0,3).forEach(([key,value],rank)=>{
         const d=DIMENSIONS[key],deep=DEEP_ANALYSIS[key];
@@ -523,10 +554,8 @@
         yy+=2;yy=addLabelValue("Experimento seguro para testar a crença",deep.experiment,yy);
       });
 
-      // MAPA COMPLETO E PLANO
-      y=newPage("Mapa completo das 10 dimensões","Visão comparativa e próximos passos");
-      sorted.forEach(([k,v])=>{y=drawScoreBar(DIMENSIONS[k].label,v,y)});
-      y+=2;
+      // ORIENTAÇÕES FINAIS
+      y=newPage("Próximos passos","Como transformar compreensão em mudança prática");
       doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Como usar este relatório",margin,y);y+=7;
       y=addParagraph("1. Escolha apenas um dos três padrões predominantes para trabalhar primeiro. 2. Observe situações reais em que o padrão aparece. 3. Registre a previsão que sua mente faz. 4. Faça um experimento pequeno e seguro. 5. Compare a previsão com o que realmente aconteceu.",margin,y,contentW,8.7,[51,65,85],"normal",4.5);
       y+=4;

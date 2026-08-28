@@ -19,7 +19,8 @@ const CONFIG = Object.freeze({
   apiKey: "2026Impulso$",
   adminEmail: "impulsoflow@gmail.com",
   senderName: "Instituto Impulso Coaching de Liderança",
-  maxPdfBase64Length: 8500000
+  maxPdfBase64Length: 8500000,
+  driveFolderName: "Relatorios_Bloqueios_Emocionais_Impulso"
 });
 
 const HEADERS = [
@@ -46,14 +47,16 @@ const HEADERS = [
   "Arquivo PDF",
   "E-mail enviado",
   "Erro",
-  "Submission ID"
+  "Submission ID",
+  "Relatório PDF",
+  "Link Relatório PDF"
 ];
 
 function doGet() {
   return jsonResponse_({
     ok: true,
     service: "Mapa de Bloqueios Emocionais — Impulso",
-    version: "2026-08-27-v3",
+    version: "2026-08-27-v4",
     sheet: CONFIG.sheetName
   });
 }
@@ -79,7 +82,7 @@ function doPost(e) {
       sheet.appendRow([
         new Date(),
         parseDateOrNow_(payload.respondidoEm),
-        clean_(payload.instrumento) || "Bloqueios Emocionais",
+        clean_(payload.instrumento) || "Mapa de Bloqueios Emocionais",
         clean_(payload.nome),
         clean_(payload.email).toLowerCase(),
         clean_(payload.whatsapp),
@@ -96,13 +99,25 @@ function doPost(e) {
         scores.Timidez,
         scores.Vitimismo,
         Number(payload.mediaTotal || 0),
-        JSON.stringify(scores),
+        clean_(payload.analysisJson) || JSON.stringify(scores),
         clean_(payload.pdfFileName),
         "PENDENTE",
         "",
-        submissionId
+        submissionId,
+        "",
+        ""
       ]);
       row = sheet.getLastRow();
+      SpreadsheetApp.flush();
+    }
+
+    let reportLink = clean_(sheet.getRange(row, 26).getValue());
+    let pdfBlob = null;
+
+    if (!reportLink) {
+      pdfBlob = createPdfBlob_(payload);
+      reportLink = storePdfBlobAndGetLink_(pdfBlob);
+      setReportLink_(sheet, row, reportLink);
       SpreadsheetApp.flush();
     }
 
@@ -112,22 +127,25 @@ function doPost(e) {
         saved: true,
         emailSent: true,
         duplicate: true,
+        reportLink: reportLink,
         submissionId: submissionId,
         row: row
       });
     }
 
     try {
-      sendClientReport_(payload);
+      if (!pdfBlob) pdfBlob = createPdfBlob_(payload);
+      sendClientReport_(payload, pdfBlob, reportLink);
       sheet.getRange(row, 22, 1, 2).setValues([["SIM", ""]]);
       SpreadsheetApp.flush();
-      notifyAdmin_(payload, submissionId, row);
+      notifyAdmin_(payload, submissionId, row, reportLink);
 
       return jsonResponse_({
         ok: true,
         saved: true,
         emailSent: true,
         duplicate: Boolean(existingRow),
+        reportLink: reportLink,
         submissionId: submissionId,
         row: row
       });
@@ -140,9 +158,10 @@ function doPost(e) {
         ok: false,
         saved: true,
         emailSent: false,
+        reportLink: reportLink,
         submissionId: submissionId,
         row: row,
-        message: "Resultado salvo, mas o e-mail falhou: " + message
+        message: "Resultado e PDF salvos, mas o e-mail falhou: " + message
       });
     }
   } catch (error) {
@@ -248,29 +267,78 @@ function getScores_(payload) {
   };
 }
 
-function sendClientReport_(payload) {
+function getOrCreateReportsFolder_() {
+  const folders = DriveApp.getFoldersByName(CONFIG.driveFolderName);
+  if (folders.hasNext()) return folders.next();
+  return DriveApp.createFolder(CONFIG.driveFolderName);
+}
+
+function createPdfBlob_(payload) {
   const rawBase64 = clean_(payload.pdfBase64).replace(/^data:application\/pdf;base64,/, "");
   const bytes = Utilities.base64Decode(rawBase64);
-  const fileName = sanitizeFilename_(payload.pdfFileName || "Bloqueios_Emocionais.pdf");
-  const pdfBlob = Utilities.newBlob(bytes, MimeType.PDF, fileName);
+  const fileName = sanitizeFilename_(payload.pdfFileName || "Mapa_Bloqueios_Emocionais.pdf");
+  return Utilities.newBlob(bytes, MimeType.PDF, fileName);
+}
 
+function storePdfBlobAndGetLink_(pdfBlob) {
+  const folder = getOrCreateReportsFolder_();
+  const file = folder.createFile(pdfBlob);
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (sharingError) {
+    console.log("Compartilhamento por link não habilitado pela política da conta: " + errorMessage_(sharingError));
+  }
+  return file.getUrl();
+}
+
+function setReportLink_(sheet, row, reportLink) {
+  if (!reportLink) return;
+
+  try {
+    const rich = SpreadsheetApp.newRichTextValue()
+      .setText("Abrir relatório")
+      .setLinkUrl(reportLink)
+      .build();
+    sheet.getRange(row, 25).setRichTextValue(rich);
+  } catch (error) {
+    sheet.getRange(row, 25).setValue(reportLink);
+  }
+
+  sheet.getRange(row, 26).setValue(reportLink);
+}
+
+function sendClientReport_(payload, pdfBlob, reportLink) {
   const clientName = clean_(payload.nome);
   const media = Number(payload.mediaTotal || 0);
-  const subject = "Seu resultado — Mapa de Bloqueios Emocionais";
+  const perfilPrimario = clean_(payload.perfilPrimario);
+  const subject = "Seu relatório — Mapa de Bloqueios Emocionais";
+
   const plainText =
     "Olá, " + clientName + "!\n\n" +
-    "Seu relatório do Mapa de Bloqueios Emocionais está anexado a este e-mail.\n" +
-    "Média total: " + media + "%\n\n" +
-    "Instituto Impulso Coaching de Liderança";
+    "Seu relatório detalhado do Mapa de Bloqueios Emocionais está anexado a este e-mail.\n" +
+    "Padrão predominante: " + perfilPrimario + "\n" +
+    "Índice geral: " + media + "%\n\n" +
+    "Link permanente do relatório: " + reportLink + "\n\n" +
+    "Instituto Impulso IE™ de Liderança\n" +
+    "A mudança pode acontecer em um instante.";
 
   const htmlBody =
-    '<div style="font-family:Arial,sans-serif;color:#0f172a;line-height:1.6">' +
-      '<h2 style="color:#063b7a">Olá, ' + escapeHtml_(clientName) + '!</h2>' +
-      '<p>Seu relatório da <strong>Pesquisa Bloqueios Emocionais</strong> está anexado.</p>' +
-      '<p><strong>Média total:</strong> ' + media + '%</p>' +
-      '<p>Use este material como apoio de autoconhecimento e desenvolvimento.</p>' +
-      '<p style="color:#475569">Instituto Impulso Coaching de Liderança<br>' +
-      'A mudança pode acontecer em um instante.</p>' +
+    '<div style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;background:#f4f9ff;padding:24px;border-radius:16px;color:#0f172a">' +
+      '<div style="background:linear-gradient(135deg,#0b4aa2,#062b62);padding:24px;border-radius:14px;text-align:center">' +
+        '<h1 style="color:#fff;margin:0;font-size:22px">Instituto Impulso IE™ de Liderança</h1>' +
+        '<p style="color:#cfe6ff;margin:6px 0 0;font-size:13px">A mudança pode acontecer em um instante</p>' +
+      '</div>' +
+      '<div style="background:#fff;padding:24px;border-radius:14px;margin-top:16px">' +
+        '<h2 style="color:#063b7a;margin:0 0 12px">Olá, ' + escapeHtml_(clientName) + '!</h2>' +
+        '<p style="color:#334155">Seu <strong>Relatório Detalhado do Mapa de Bloqueios Emocionais</strong> está anexado.</p>' +
+        '<p style="color:#334155"><strong>Padrão predominante:</strong> ' + escapeHtml_(perfilPrimario) + '<br>' +
+        '<strong>Índice geral:</strong> ' + media + '%</p>' +
+        '<p style="color:#334155">O relatório aprofunda seus três padrões mais fortes e apresenta crenças associadas, medos, mecanismos de proteção, compromissos ocultos, grandes pressupostos, ciclo do bloqueio, perguntas de coaching e experimentos seguros de mudança.</p>' +
+        '<div style="text-align:center;margin:24px 0">' +
+          '<a href="' + escapeHtml_(reportLink) + '" style="display:inline-block;background:linear-gradient(45deg,#0b63ce,#084aa0);color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:bold">Abrir relatório PDF</a>' +
+        '</div>' +
+        '<p style="font-size:12px;color:#64748b">Este material é educacional e voltado ao autoconhecimento e coaching; não substitui avaliação psicológica ou diagnóstico clínico.</p>' +
+      '</div>' +
     '</div>';
 
   GmailApp.sendEmail(
@@ -280,20 +348,23 @@ function sendClientReport_(payload) {
     {
       htmlBody: htmlBody,
       attachments: [pdfBlob],
-      name: CONFIG.senderName
+      name: CONFIG.senderName,
+      replyTo: CONFIG.adminEmail
     }
   );
 }
 
-function notifyAdmin_(payload, submissionId, row) {
+function notifyAdmin_(payload, submissionId, row, reportLink) {
   try {
-    const subject = "Novo resultado — Bloqueios Emocionais";
+    const subject = "Novo resultado — Mapa de Bloqueios Emocionais";
     const body =
       "Participante: " + clean_(payload.nome) + "\n" +
       "E-mail: " + clean_(payload.email).toLowerCase() + "\n" +
       "WhatsApp: " + clean_(payload.whatsapp) + "\n" +
-      "Média Total: " + Number(payload.mediaTotal || 0) + "%\n" +
+      "Padrão predominante: " + clean_(payload.perfilPrimario) + "\n" +
+      "Índice Geral: " + Number(payload.mediaTotal || 0) + "%\n" +
       "Linha: " + row + "\n" +
+      "Relatório PDF: " + clean_(reportLink) + "\n" +
       "Submission ID: " + submissionId;
 
     GmailApp.sendEmail(CONFIG.adminEmail, subject, body, { name: CONFIG.senderName });

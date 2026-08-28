@@ -195,7 +195,6 @@
     "use strict";
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzUpg5e7Hx2qlPqDymrGz1lTkHQJZcOcU2M9TN4dlFD8qL1aXPsa1VkdjX_JikkfFBHw/exec";
-    const API_KEY = "2026Impulso$";
     const RESPONSE_OPTIONS = [
       {value:0,text:"Nunca ou quase nunca"},
       {value:1,text:"Raramente"},
@@ -545,7 +544,7 @@
         top3:sorted.slice(0,3).map(([k,v])=>({key:k,label:DIMENSIONS[k].label,score:v,belief:DIMENSIONS[k].belief,hiddenCommitment:DEEP_ANALYSIS[k].hiddenCommitment,bigAssumption:DEEP_ANALYSIS[k].bigAssumption}))
       };
       const payload={
-        apiKey:API_KEY,submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v4",
+        submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v4",
         nome:name,email,whatsapp,idade:age,profissao:occupation,escolaridade:education,metaMudanca:goal,
         perfilPrimario:primary.label+" ("+scores[primaryKey]+"%)",perfilSecundario:"Índice Geral: "+avg+"%",
         scoresJson:JSON.stringify(scores),analysisJson:JSON.stringify(analysisPayload),mediaTotal:avg,

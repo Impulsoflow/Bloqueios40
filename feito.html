@@ -231,7 +231,6 @@ button:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important;
 // ========================================
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzUpg5e7Hx2qlPqDymrGz1lTkHQJZcOcU2M9TN4dlFD8qL1aXPsa1VkdjX_JikkfFBHw/exec";   
                      
-const API_KEY = "2026Impulso$";
 
 // ========================================
 // === CONFIGURAÇÃO DO TESTE (MÓDULOS E PERGUNTAS) ===
@@ -646,7 +645,6 @@ async function autoSendWithPdf() {
 
         // Mapeamento para o Payload Genérico do AppScript (usaremos as colunas existentes de certa forma)
         const payload = {
-            apiKey: API_KEY,
             testId: "bloqueios_emocionais_v1",
             nome: data.user.name,
             email: data.user.email,

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mapa de Bloqueios Emocionais | Impulso</title>
+  <link rel="icon" type="image/png" href="impulso-logo.png" />
+  <link rel="apple-touch-icon" href="impulso-logo.png" />
   <meta name="description" content="Mapa de Bloqueios Emocionais — 40 questões, 10 dimensões e leitura de crenças, medos e padrões de proteção. Instituto Impulso IE™ de Liderança">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,61 +13,123 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root{--bg1:#0b4aa2;--bg2:#062b62;--surface:#f4f9ff;--card:#fff;--text:#0f172a;--muted:#475569;--primary:#0b63ce;--primary2:#084aa0;--accent:#38bdf8;--shadow:0 14px 34px rgba(2,32,71,.18);--shadow2:0 8px 20px rgba(2,32,71,.12)}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:'Poppins',system-ui,-apple-system,sans-serif;background:radial-gradient(1100px 650px at 20% 10%,rgba(56,189,248,.32),transparent 55%),linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--text);padding:18px;line-height:1.6}
-    .shell{max-width:1000px;margin:0 auto;background:rgba(244,249,255,.98);border:1px solid rgba(56,189,248,.35);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.wrap{padding:26px}
-    .brand{text-align:center;padding:4px 0 18px;border-bottom:1px solid rgba(11,99,206,.1);margin-bottom:22px}.brand-kicker{font:400 15px/1.2 Arial,sans-serif;color:#64748b;letter-spacing:.12em;text-transform:uppercase;margin:0}.brand-tag{font:700 14px/1.3 Arial,sans-serif;color:var(--primary);margin:6px 0 0}
-    .hero{background:linear-gradient(135deg,#0b4aa2,#062b62);color:#fff;border-radius:18px;padding:42px 28px;text-align:center;box-shadow:0 14px 34px rgba(2,32,71,.18);margin-bottom:24px}.hero-badge{display:inline-block;background:rgba(56,189,248,.2);border:1px solid rgba(56,189,248,.45);color:#7dd3fc;padding:6px 16px;border-radius:999px;font:800 11px Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}.hero h1{font:800 48px/1.05 Arial,sans-serif;letter-spacing:-.03em;margin:18px 0 12px;color:#fff}.hero p{max-width:760px;margin:0 auto;color:rgba(255,255,255,.92);font-size:17px}
-    .card{background:#fff;border:1px solid #d8e7fb;border-radius:16px;box-shadow:var(--shadow2);padding:24px}.intro-note{background:linear-gradient(180deg,rgba(56,189,248,.14),rgba(56,189,248,.06));border:1px solid rgba(56,189,248,.3);border-radius:15px;padding:18px 20px;text-align:center;margin-bottom:20px}.intro-note strong{color:#063b7a}
-    .grid-form{display:grid;grid-template-columns:repeat(12,1fr);gap:16px 12px}.form-group{grid-column:span 6}.col-full{grid-column:span 12}.col-half{grid-column:span 6}.col-short{grid-column:span 3}.form-group label{display:block;font:800 13px Arial,sans-serif;color:#063b7a;margin-bottom:7px}.field input,.field select{width:100%;border:2px solid #cfe0f5;border-radius:12px;background:#fff;padding:12px 13px;font-size:14px;color:#0f172a;outline:none;min-height:48px}.field input:focus,.field select:focus{border-color:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.10)}
-    .btn{appearance:none;border:0;border-radius:13px;padding:12px 17px;font:800 14px Arial,sans-serif;cursor:pointer;min-height:46px}.btn-primary{background:linear-gradient(45deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 10px 18px rgba(11,99,206,.22)}.btn-ghost{background:#fff;color:#0b2a52;border:1.5px solid rgba(11,99,206,.22);box-shadow:0 8px 16px rgba(2,32,71,.08)}.btn:disabled{opacity:.5;cursor:not-allowed}
-    .step{display:none}.step.active{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 10px;font-family:Arial,sans-serif}.counter{font-weight:900;color:#0b2a52}.progress-meta{font-weight:700;color:#64748b;font-size:13px}.progress-bar{height:11px;background:#e6eefc;border-radius:999px;overflow:hidden;border:1px solid rgba(11,99,206,.12)}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--primary));transition:width .3s;border-radius:999px}
-    .question-card{margin-top:13px;padding:30px}.question-title{margin:0 auto 18px;max-width:820px;min-height:74px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:24px;font-weight:700;line-height:1.4}.options{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:10px}.opt{border:1.5px solid rgba(11,99,206,.22);background:rgba(11,99,206,.06);border-radius:14px;padding:12px 13px;cursor:pointer;user-select:none;min-height:88px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;color:#0b2a52;font-size:13px;flex:0 1 calc(20% - 10px);max-width:190px;min-width:135px;line-height:1.3}.opt:hover{transform:translateY(-2px);box-shadow:0 12px 18px rgba(2,32,71,.10);border-color:rgba(56,189,248,.55)}.opt.selected{background:linear-gradient(45deg,var(--primary),var(--primary2));border-color:#0b63ce;color:#fff;box-shadow:0 14px 22px rgba(11,99,206,.22)}
-    .nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}.shuffle-note{text-align:center;font-size:12px;color:#64748b;margin:10px 0 0}
-    .result-title{font-size:32px;font-weight:900;text-align:center;color:#063b7a;margin:0 0 18px}.info-box{background:linear-gradient(135deg,#dbeafe,#ccfbf1);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:var(--shadow2)}.info-box h3{margin:0 0 8px;color:#0f172a;font-size:19px}.score-row{margin-bottom:18px}.score-row p{font-weight:800;margin:0 0 6px;color:#1f2937}.bar{background:#e5e7eb;height:30px;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}.fill{height:100%;width:0;position:relative;border-radius:999px;transition:width .8s}.fill:after{content:attr(data-percent);position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:900;color:#fff}
-    .score-pais .fill{background:#ef4444}.score-rejeicao .fill{background:#f59e0b}.score-autoimagem .fill{background:#3b82f6}.score-depressao .fill{background:#10b981}.score-culpa .fill{background:#8b5cf6}.score-criticas .fill{background:#ec4899}.score-escassez .fill{background:#6b7280}.score-procrastinacao .fill{background:#f97316}.score-timidez .fill{background:#10b981}.score-vitimismo .fill{background:#8b5cf6}
-    .average{font-size:34px;font-weight:900;text-align:center;margin:24px 0;color:#1f2937}.average span{color:#0d9488}.success{margin-top:18px;background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:13px;padding:15px;text-align:center;font-weight:800}.hidden{display:none!important}
-    @media(max-width:880px){.opt{flex:0 1 calc(50% - 10px);max-width:none}}@media(max-width:800px){.grid-form{grid-template-columns:repeat(6,1fr)}.col-full{grid-column:span 6}.col-half{grid-column:span 3}.col-short{grid-column:span 3}}@media(max-width:620px){body{padding:7px}.wrap{padding:14px}.hero{padding:32px 17px}.hero h1{font-size:34px}.hero p{font-size:14px}.grid-form{grid-template-columns:1fr;gap:11px}.form-group,.col-full,.col-half,.col-short{grid-column:span 1}.card{padding:17px 13px}}
-    @media(max-width:480px){.shell{overflow:visible}.wrap{padding-top:58px}#step-quiz .topbar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(244,249,255,.98);padding:8px 13px 5px;border-bottom:1px solid rgba(11,99,206,.15);box-shadow:0 2px 8px rgba(2,32,71,.08)}#step-quiz .progress-bar{position:fixed;top:38px;left:0;right:0;z-index:999;border-radius:0;height:8px}.question-card{padding:12px 10px;margin-top:8px}.question-title{font-size:20px;font-weight:400;min-height:72px;margin-bottom:8px;line-height:1.35}.options{gap:7px}.opt{flex:0 1 calc(50% - 4px);max-width:calc(50% - 4px);min-width:0;min-height:62px;padding:7px 6px;font-size:11px;border-radius:12px}.nav{margin-top:10px;flex-wrap:nowrap}.btn{min-height:44px;padding:11px 13px;font-size:13px}.result-title{font-size:27px}.average{font-size:28px}.bar{height:27px}}
   
-    .method-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:18px}
-    .method-pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 8px;font:700 11px/1.25 Arial,sans-serif;color:#e0f2fe}
-    .result-hero{background:linear-gradient(135deg,#063b7a,#0b63ce);color:white;border-radius:18px;padding:26px;margin-bottom:18px;box-shadow:var(--shadow)}
+  <style>
+    :root{
+      --bg1:#0b4aa2;--bg2:#062b62;--surface:#f4f9ff;--card:#ffffff;
+      --text:#0f172a;--muted:#475569;--primary:#0b63ce;--primary2:#084aa0;
+      --accent:#38bdf8;--border:#cfe6ff;--shadow:0 14px 34px rgba(2,32,71,.18);
+      --shadow2:0 8px 20px rgba(2,32,71,.12);--radius:18px;--radius2:14px;
+    }
+    *{box-sizing:border-box} html,body{min-height:100%}
+    body{
+      margin:0;font-family:'Poppins',system-ui,-apple-system,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 10%,rgba(56,189,248,.35),transparent 55%),
+        radial-gradient(900px 600px at 85% 15%,rgba(255,215,0,.10),transparent 60%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:var(--text);line-height:1.6;padding:12px;
+    }
+    .container{
+      max-width:1200px;margin:0 auto;
+      background:linear-gradient(180deg,rgba(244,249,255,.97),rgba(244,249,255,.94));
+      border:1px solid rgba(56,189,248,.35);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;position:relative;
+    }
+    .container::before{
+      content:"";position:absolute;top:0;left:0;right:0;height:6px;
+      background:linear-gradient(90deg,var(--accent),var(--primary));
+    }
+    .wrap{padding:22px}
+    .header{text-align:center;padding:10px 0 20px;margin-bottom:14px;border-bottom:1px solid rgba(11,99,206,.08)}
+    .impulso-logo{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto 12px;border-radius:50%;filter:drop-shadow(0 7px 12px rgba(2,32,71,.14))}
+    .main-title{margin:0;font:400 18px/1.2 Arial,Helvetica,sans-serif;color:#64748b;letter-spacing:.12em;text-transform:uppercase}
+    .tagline{margin:6px 0 18px;font:700 13px/1.3 Arial,sans-serif;color:#0b2a52;letter-spacing:.02em}
+    .sub-title{margin:0;font:400 34px/1.15 Arial,Helvetica,sans-serif;color:#063b7a;letter-spacing:-.01em}
+    .header-desc{margin:12px auto 0;max-width:90ch;color:var(--muted);font-size:14px;text-align:center}
+    .card{background:var(--card);border:1px solid rgba(207,230,255,.95);border-radius:var(--radius2);box-shadow:var(--shadow2);padding:18px}
+    .instructions{background:linear-gradient(180deg,rgba(56,189,248,.14),rgba(56,189,248,.08));border:1px solid rgba(56,189,248,.25);border-left:6px solid var(--accent);border-radius:var(--radius2);padding:18px;margin:14px 0 18px;color:var(--text)}
+    .instructions p,.instructions li{margin:0 0 10px;font-size:14px;color:var(--text);text-align:justify}
+    .instructions ul{margin:8px 0 0;padding-left:20px}.instructions strong{color:#063b7a;font-family:Arial,sans-serif}
+    .method-row{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+    .method-chip{background:#fff;border:1px solid #cfe6ff;border-radius:999px;padding:6px 11px;font:800 11px Arial,sans-serif;color:#0b4aa2;box-shadow:0 4px 10px rgba(2,32,71,.06)}
+    .grid-form{display:grid;grid-template-columns:repeat(12,1fr);gap:16px 12px}
+    .form-group{grid-column:span 6}.col-full{grid-column:span 12}.col-half{grid-column:span 6}.col-short{grid-column:span 3}
+    .form-group label{display:block;font:800 14px Arial,sans-serif;color:#063b7a;margin-bottom:8px}
+    .field input,.field select{width:100%;padding:14px;border:1.5px solid rgba(11,99,206,.28);border-radius:12px;font:500 15px 'Poppins',sans-serif;background:#fff;outline:none;min-height:50px;transition:box-shadow .2s,border-color .2s}
+    .field input:focus,.field select:focus{border-color:rgba(11,99,206,.55);box-shadow:0 0 0 4px rgba(56,189,248,.22)}
+    .btn{appearance:none;border:0;cursor:pointer;border-radius:14px;padding:12px 16px;font:800 14px Arial,sans-serif;min-height:46px;transition:transform .12s,box-shadow .2s,filter .2s}
+    .btn-primary{background:linear-gradient(45deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 10px 18px rgba(11,99,206,.22)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 26px rgba(11,99,206,.30)}
+    .btn-ghost{background:#fff;color:#0b2a52;border:1.5px solid rgba(11,99,206,.22);box-shadow:0 8px 16px rgba(2,32,71,.08)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+    .step{display:none}.step.active{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .topbar{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between;margin:10px 0 12px}
+    .counter{font:800 14px Arial,sans-serif;color:#0b2a52}.progress-meta{font:700 13px Arial,sans-serif;color:var(--muted)}
+    .progress-bar{width:100%;height:12px;background:#e6eefc;border-radius:999px;overflow:hidden;border:1px solid rgba(11,99,206,.12)}
+    .progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--primary));transition:width .35s}
+    .question-card{margin-top:12px;padding:28px 22px}
+    .question-title{margin:0 auto 12px;max-width:900px;min-height:76px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:24px;font-weight:700;line-height:1.4;color:#0f172a}
+    .options{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:10px;margin-top:18px}
+    .opt{border:1.5px solid rgba(11,99,206,.22);background:rgba(11,99,206,.06);border-radius:14px;padding:12px 14px;cursor:pointer;user-select:none;min-height:68px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;color:#0b2a52;font-size:13px;flex:0 1 calc(20% - 10px);max-width:180px;min-width:130px;line-height:1.35;transition:transform .12s,box-shadow .2s,border-color .2s,background .2s}
+    .opt:hover{transform:translateY(-1px);box-shadow:0 12px 18px rgba(2,32,71,.10);border-color:rgba(56,189,248,.55)}
+    .opt.selected{background:linear-gradient(45deg,var(--primary),var(--primary2));border-color:rgba(11,99,206,.55);color:#fff;box-shadow:0 14px 22px rgba(11,99,206,.22);font-weight:700}
+    .nav{display:flex;gap:10px;justify-content:space-between;margin-top:14px;flex-wrap:wrap}.shuffle-note{text-align:center;font-size:12px;color:#64748b;margin:12px 0 0}
+    .result-title{font:900 30px/1.2 Arial,sans-serif;text-align:center;color:#063b7a;margin:0 0 18px}
+    .result-hero{background:linear-gradient(135deg,#063b7a,#0b63ce);color:#fff;border-radius:18px;padding:26px;margin-bottom:18px;box-shadow:var(--shadow)}
     .result-hero small{display:block;text-transform:uppercase;letter-spacing:.14em;font:800 11px Arial,sans-serif;color:#bae6fd;margin-bottom:8px}
-    .result-hero h3{margin:0 0 8px;font-size:29px;line-height:1.08}
-    .result-hero p{margin:0;color:rgba(255,255,255,.9)}
+    .result-hero h3{margin:0 0 8px;font-size:29px;line-height:1.08}.result-hero p{margin:0;color:rgba(255,255,255,.9)}
     .signal-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:7px 11px;border-radius:999px;font:800 12px Arial,sans-serif;margin-top:13px}
     .insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 18px}
     .insight-card{background:#fff;border:1px solid #d8e7fb;border-radius:15px;padding:17px;box-shadow:var(--shadow2)}
     .insight-card .eyebrow{font:800 10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;margin-bottom:6px}
-    .insight-card strong{display:block;color:#0f2f57;font-size:16px;line-height:1.35}
-    .insight-card p{margin:6px 0 0;font-size:13px;color:#475569}
-    .top-three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 20px}
+    .insight-card strong{display:block;color:#0f2f57;font-size:16px;line-height:1.35}.insight-card p{margin:6px 0 0;font-size:13px;color:#475569}
+    .top-three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
     .rank-card{border:1px solid #d8e7fb;background:linear-gradient(180deg,#fff,#f6fbff);border-radius:14px;padding:15px;text-align:center}
-    .rank-card .rank{font:900 11px Arial,sans-serif;color:#64748b;text-transform:uppercase}
-    .rank-card .pct{font-size:30px;font-weight:900;color:#0b63ce;line-height:1.1;margin:5px 0}
-    .rank-card .name{font-size:12px;font-weight:800;color:#0f2f57;line-height:1.25}
-    .coaching-box{background:linear-gradient(180deg,#eff8ff,#fff);border:1px solid #bae6fd;border-radius:16px;padding:20px;margin:18px 0}
-    .coaching-box h3{margin:0 0 10px;color:#063b7a}
-    .coach-q{margin:7px 0;padding-left:18px;color:#334155}
-    .disclaimer{font-size:12px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-top:16px}
-    .auto-status{font-size:13px;text-align:center;border-radius:12px;padding:12px;margin-top:12px;font-weight:700}
-    .auto-status.pending{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
-    .auto-status.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
-    .auto-status.error{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
-    @media(max-width:760px){.method-strip{grid-template-columns:1fr 1fr}.insight-grid{grid-template-columns:1fr}.top-three{grid-template-columns:1fr 1fr 1fr}.result-hero h3{font-size:24px}}
-    @media(max-width:480px){.top-three{grid-template-columns:1fr}.method-strip{grid-template-columns:1fr 1fr}.rank-card{display:grid;grid-template-columns:38px 62px 1fr;align-items:center;text-align:left;gap:5px}.rank-card .pct{font-size:24px}}
-
+    .rank-card .rank{font:900 11px Arial,sans-serif;color:#64748b;text-transform:uppercase}.rank-card .pct{font-size:30px;font-weight:900;color:#0b63ce;line-height:1.1;margin:5px 0}.rank-card .name{font-size:12px;font-weight:800;color:#0f2f57;line-height:1.25}
+    .score-row{margin-bottom:16px}.score-row p{font-weight:800;margin:0 0 6px;color:#1f2937}.bar{background:#e5e7eb;height:28px;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
+    .fill{height:100%;width:0;position:relative;border-radius:999px;transition:width .8s}.fill:after{content:attr(data-percent);position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:900;color:#fff}
+    .average{font-size:30px;font-weight:900;text-align:center;margin:22px 0 4px;color:#1f2937}.average span{color:#0b63ce}
+    .coaching-box,.info-box{background:linear-gradient(180deg,#eff8ff,#fff);border:1px solid #bae6fd;border-radius:16px;padding:20px;margin:18px 0;box-shadow:var(--shadow2)}
+    .coaching-box h3,.info-box h3{margin:0 0 10px;color:#063b7a}.coach-q{margin:7px 0;padding-left:18px;color:#334155}
+    .report-note{background:#fff;border:1px solid #cfe6ff;border-left:6px solid var(--primary);border-radius:14px;padding:16px;margin-top:18px;color:#334155}
+    .report-note strong{color:#063b7a}.disclaimer{font-size:12px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:13px;margin-top:16px}
+    .auto-status{font-size:13px;text-align:center;border-radius:12px;padding:12px;margin-top:12px;font-weight:700}.auto-status.pending{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}.auto-status.success{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}.auto-status.error{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+    .hidden{display:none!important}
+    @media(max-width:820px){.opt{flex:0 1 calc(50% - 10px);max-width:none}.insight-grid{grid-template-columns:1fr}.top-three{grid-template-columns:1fr 1fr 1fr}}
+    @media(max-width:800px){.grid-form{grid-template-columns:repeat(6,1fr)}.col-full{grid-column:span 6}.col-half{grid-column:span 3}.col-short{grid-column:span 3}}
+    @media(max-width:650px){body{padding:7px}.wrap{padding:14px}.sub-title{font-size:28px}.main-title{font-size:15px}.header-desc{font-size:13px}.grid-form{grid-template-columns:1fr;gap:11px}.form-group,.col-full,.col-half,.col-short{grid-column:span 1}.card{padding:17px 13px}.question-title{font-size:20px;min-height:92px}}
+    @media(max-width:480px){.container{overflow:visible}.wrap{padding-top:58px}#step-quiz .topbar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(244,249,255,.98);padding:8px 13px 5px;border-bottom:1px solid rgba(11,99,206,.15);box-shadow:0 2px 8px rgba(2,32,71,.08)}#step-quiz .progress-bar{position:fixed;top:38px;left:0;right:0;z-index:999;border-radius:0;height:8px}.question-card{padding:12px 10px;margin-top:8px}.question-title{font-size:20px;font-weight:400;min-height:72px;margin-bottom:8px;line-height:1.35}.options{gap:7px;margin-top:4px}.opt{flex:0 1 calc(50% - 4px);max-width:calc(50% - 4px);min-width:0;min-height:58px;padding:7px 6px;font-size:11px;border-radius:12px}.nav{margin-top:10px;flex-wrap:nowrap}.btn{min-height:44px;padding:11px 13px;font-size:13px}.result-title{font-size:27px}.average{font-size:26px}.bar{height:27px}.top-three{grid-template-columns:1fr}.rank-card{display:grid;grid-template-columns:38px 62px 1fr;align-items:center;text-align:left;gap:5px}.rank-card .pct{font-size:24px}}
   </style>
 </head>
+
 <body>
-  <main class="shell"><div class="wrap">
-    <header class="brand"><p class="brand-kicker">Instituto Impulso IE™ de Liderança</p><p class="brand-tag">A mudança pode acontecer em um instante</p></header>
+  <main class="container"><div class="wrap">
+    <header class="header">
+      <img src="impulso-logo.png" alt="Instituto Impulso IE" class="impulso-logo" />
+      <h1 class="main-title">Instituto Impulso IE™ de Liderança</h1>
+      <p class="tagline">A mudança pode acontecer em um instante</p>
+      <h2 class="sub-title">Mapa de Bloqueios Emocionais</h2>
+      <p class="header-desc">Uma pesquisa de autoconhecimento para identificar padrões de proteção, crenças limitantes e mecanismos emocionais que podem dificultar mudanças importantes.</p>
+    </header>
     <section id="step-intro" class="step active">
-      <div class="hero"><span class="hero-badge">Diagnóstico de Autoconhecimento</span><h1>Mapa de Bloqueios Emocionais</h1><p>Uma experiência de autoanálise em 40 questões para identificar crenças, medos e padrões de proteção que podem estar limitando decisões, relacionamentos e resultados.</p><div class="method-strip"><div class="method-pill">40 questões</div><div class="method-pill">10 dimensões</div><div class="method-pill">Crença central</div><div class="method-pill">Padrão de proteção</div><div class="method-pill">Plano de reflexão</div></div></div>
-      <div class="intro-note"><strong>📋 Preencha seus dados para iniciar.</strong><br>Não existem respostas certas ou erradas. Responda pensando em como você costuma reagir na prática — não em como gostaria de reagir.</div>
+      <div class="instructions">
+        <p><strong>Como responder</strong></p>
+        <ul>
+          <li>Responda pensando em como você costuma reagir na prática, especialmente nos últimos meses.</li>
+          <li>Não existem respostas certas ou erradas. Escolha a alternativa que mais representa sua experiência real.</li>
+          <li>As perguntas aparecem em ordem misturada para reduzir respostas automáticas.</li>
+          <li>Ao concluir, você receberá automaticamente por e-mail um relatório detalhado de autoconhecimento.</li>
+        </ul>
+        <div class="method-row">
+          <span class="method-chip">40 questões</span>
+          <span class="method-chip">10 dimensões</span>
+          <span class="method-chip">Crenças</span>
+          <span class="method-chip">Proteções</span>
+          <span class="method-chip">Perguntas de coaching</span>
+        </div>
+      </div>
       <div class="card"><div class="grid-form">
         <div class="form-group col-full"><label for="name">Nome Completo *</label><div class="field"><input id="name" type="text" placeholder="Ex: Rogério Braga"></div></div>
         <div class="form-group col-half"><label for="whatsapp">WhatsApp *</label><div class="field"><input id="whatsapp" type="tel" inputmode="tel" placeholder="(00) 90000-0000"></div></div>
@@ -113,6 +177,8 @@
         <div id="coaching-questions"></div>
       </div>
 
+      <div class="report-note"><strong>Relatório completo:</strong> além desta síntese, você receberá por e-mail um PDF detalhado com os três padrões predominantes, crenças associadas, medos, compromissos ocultos, grandes pressupostos, ciclo do bloqueio, perguntas de coaching e experimentos de mudança.</div>
+
       <div class="info-box" style="margin-top:18px">
         <h3>Como ler este resultado</h3>
         <p style="margin:0;color:#374151">O mapa procura organizar sinais de crenças, medos e estratégias de proteção. Uma pontuação alta não significa que você “tem um problema”; indica apenas que aquele padrão apareceu com maior frequência nas suas respostas e merece investigação consciente.</p>
@@ -148,6 +214,90 @@
       Procrastinacao:{label:"Evitação e Procrastinação",short:"Evitação",belief:"“É melhor esperar até eu me sentir pronto(a).”",fear:"Falhar, sentir desconforto, descobrir incapacidade ou tomar a decisão errada.",protection:"Adiar, preparar demais, trocar prioridade por tarefas menores.",cost:"Acumular pressão e reforçar a crença de incapacidade.",summary:"O adiamento pode estar funcionando menos como preguiça e mais como proteção contra desconforto, risco ou avaliação.",questions:["Qual emoção aparece segundos antes de você adiar?","O que você está tentando evitar sentir quando não começa?","Qual é a menor ação concreta que pode ser feita em dez minutos?"]},
       Timidez:{label:"Exposição e Vulnerabilidade",short:"Vulnerabilidade",belief:"“Se eu me expuser, posso ser julgado(a) ou envergonhado(a).”",fear:"Julgamento, constrangimento, crítica ou perda de imagem.",protection:"Observar, evitar exposição, falar menos e controlar a própria apresentação.",cost:"Reduzir presença, oportunidades e expressão autêntica.",summary:"Você pode estar protegendo sua imagem por meio de baixa exposição e monitoramento intenso da reação dos outros.",questions:["Que julgamento você imagina que as pessoas fariam se você se expusesse?","Qual evidência existe de que esse julgamento seria tão grave quanto parece?","Qual exposição pequena e segura poderia ampliar sua liberdade?"]},
       Vitimismo:{label:"Impotência e Locus Externo",short:"Impotência percebida",belief:"“Minha vida depende principalmente do que os outros ou as circunstâncias fizerem.”",fear:"Assumir responsabilidade e descobrir que a mudança exige escolhas difíceis.",protection:"Esperar mudança externa, justificar inação e focar no que não controla.",cost:"Diminuir senso de agência e repetir padrões.",summary:"Você pode estar concentrando atenção no que está fora do seu controle e deixando de enxergar sua margem real de escolha.",questions:["Que 10% desta situação ainda está sob sua influência?","O que você ganharia e o que perderia ao assumir essa parte da responsabilidade?","Qual escolha concreta depende de você, mesmo que o restante não dependa?"]}
+    };
+
+
+    const DEEP_ANALYSIS = {
+      Pais:{
+        hiddenCommitment:"Manter segurança e reduzir a possibilidade de conflito, punição ou desaprovação de pessoas percebidas como importantes.",
+        bigAssumption:"Se eu contrariar uma pessoa importante, posso perder segurança, vínculo ou enfrentar consequências que não conseguirei administrar.",
+        trigger:"Autoridade, tom crítico, desaprovação, cobrança ou conflito.",
+        behaviors:["Recuar mesmo discordando","Pedir permissão ou validação em excesso","Evitar conversas difíceis","Monitorar o humor e a reação dos outros"],
+        consequence:"A pessoa preserva segurança imediata, mas pode enfraquecer autonomia, voz própria e capacidade de posicionamento.",
+        experiment:"Escolha uma situação de baixo risco e expresse uma preferência diferente com respeito. Observe o que realmente acontece, em vez de assumir antecipadamente a pior consequência."
+      },
+      Rejeicao:{
+        hiddenCommitment:"Garantir pertencimento e diminuir qualquer possibilidade de ser rejeitado(a), deixado(a) de lado ou desaprovado(a).",
+        bigAssumption:"Se eu mostrar quem realmente sou, frustrar alguém ou deixar de agradar, posso perder aceitação e vínculo.",
+        trigger:"Silêncio, afastamento, demora em respostas, discordância ou sinais ambíguos de desaprovação.",
+        behaviors:["Adaptar-se demais","Buscar confirmação constante","Evitar dizer não","Interpretar distância como rejeição"],
+        consequence:"A proteção reduz ansiedade no curto prazo, mas pode produzir relações menos autênticas e dependência da validação externa.",
+        experiment:"Em uma relação segura, pratique uma pequena discordância ou limite sem explicar demais. Observe se o vínculo realmente se rompe."
+      },
+      Autoimagem:{
+        hiddenCommitment:"Evitar situações que possam revelar incapacidade, inferioridade ou insuficiência.",
+        bigAssumption:"Se eu falhar ou não tiver um desempenho excelente, ficará evidente que não sou bom(boa) o suficiente.",
+        trigger:"Comparação, novas oportunidades, avaliação, competição ou erros.",
+        behaviors:["Comparar-se","Minimizar conquistas","Recusar desafios","Buscar validação antes de agir"],
+        consequence:"A tentativa de proteger o valor pessoal pode reduzir iniciativa e impedir experiências que gerariam competência real.",
+        experiment:"Escolha uma tarefa na qual você aceite aprender publicamente. Defina sucesso como executar e aprender, não como provar valor."
+      },
+      Depressao:{
+        hiddenCommitment:"Evitar ser surpreendido(a) por problemas e manter a sensação de controle sobre o futuro.",
+        bigAssumption:"Se eu não antecipar riscos e possibilidades, ficarei vulnerável a algo que não conseguirei enfrentar.",
+        trigger:"Incerteza, decisões sem garantia, espera, mudanças ou ausência de informação.",
+        behaviors:["Antecipar cenários","Ruminar","Revisar decisões","Adiar até sentir certeza"],
+        consequence:"A antecipação dá sensação de preparo, mas pode ampliar tensão, indecisão e consumo mental.",
+        experiment:"Escolha uma decisão reversível e limite o tempo de análise. Tome-a com informação suficiente, não com certeza absoluta, e registre o resultado."
+      },
+      Culpa:{
+        hiddenCommitment:"Evitar decepcionar pessoas e preservar a imagem de alguém responsável, disponível e cuidadoso.",
+        bigAssumption:"Se alguém estiver frustrado ou sofrendo por causa de um limite meu, isso significa que falhei ou fui egoísta.",
+        trigger:"Pedidos, conflitos, sofrimento alheio, limites e frustração de pessoas próximas.",
+        behaviors:["Assumir problemas alheios","Dizer sim quando gostaria de dizer não","Resgatar pessoas","Sentir-se responsável pelo humor dos outros"],
+        consequence:"A hiperresponsabilidade pode gerar sobrecarga, ressentimento e impedir que outras pessoas desenvolvam sua própria responsabilidade.",
+        experiment:"Antes de resolver um problema alheio, pergunte: 'Essa responsabilidade é minha, compartilhada ou do outro?'. Ajude sem assumir integralmente."
+      },
+      Criticas:{
+        hiddenCommitment:"Evitar erros, críticas e qualquer evidência de imperfeição que possa ameaçar valor ou imagem.",
+        bigAssumption:"Se eu entregar algo imperfeito, serei julgado(a), diminuído(a) ou perdererei credibilidade.",
+        trigger:"Entrega, exposição, avaliação, competição, erro ou feedback.",
+        behaviors:["Revisar excessivamente","Adiar conclusão","Focar no que falta","Elevar continuamente o padrão"],
+        consequence:"O perfeccionismo protege a imagem no curto prazo, mas pode transformar excelência em paralisia e exaustão.",
+        experiment:"Escolha uma tarefa de baixo risco e entregue uma versão suficientemente boa. Compare a consequência real com a consequência prevista."
+      },
+      Escassez:{
+        hiddenCommitment:"Preservar recursos para impedir que uma experiência de falta volte a acontecer.",
+        bigAssumption:"Se eu gastar, investir, compartilhar ou arriscar, posso ficar sem recursos e não conseguirei recuperá-los.",
+        trigger:"Compras, investimentos, perdas, oportunidades com risco ou lembranças de períodos de falta.",
+        behaviors:["Reter recursos","Evitar investimentos","Focar primeiro na perda","Desconfiar da continuidade do que é bom"],
+        consequence:"A proteção contra falta pode limitar crescimento, generosidade, investimento e aproveitamento de oportunidades.",
+        experiment:"Escolha um pequeno recurso que possa ser usado de forma segura para gerar valor. Registre o que aconteceu e se a falta prevista realmente ocorreu."
+      },
+      Procrastinacao:{
+        hiddenCommitment:"Evitar desconforto, risco de falha e contato com a possibilidade de não corresponder às próprias expectativas.",
+        bigAssumption:"Se eu começar e não fizer bem, vou confirmar que não sou capaz; esperar me mantém protegido(a) dessa conclusão.",
+        trigger:"Tarefas importantes, complexidade, ambiguidade, avaliação ou falta de garantia.",
+        behaviors:["Adiar","Fazer tarefas menores","Preparar excessivamente","Esperar motivação ou confiança"],
+        consequence:"O adiamento alivia desconforto agora, mas aumenta pressão e reforça a percepção de incapacidade.",
+        experiment:"Reduza a tarefa ao menor passo executável em dez minutos e faça-o antes de avaliar motivação, confiança ou qualidade."
+      },
+      Timidez:{
+        hiddenCommitment:"Proteger a própria imagem e evitar julgamento, constrangimento ou vergonha.",
+        bigAssumption:"Se eu me expuser e cometer um erro social, as pessoas me julgarão de forma duradoura.",
+        trigger:"Falar em público, ambientes novos, câmera, grupos ou atenção direcionada.",
+        behaviors:["Evitar exposição","Falar menos","Ensaiar demais","Observar antes de participar"],
+        consequence:"A baixa exposição preserva segurança imediata, mas pode reduzir presença, oportunidades e expressão autêntica.",
+        experiment:"Faça uma exposição pequena, voluntária e segura. Depois compare o julgamento que você previu com a reação real das pessoas."
+      },
+      Vitimismo:{
+        hiddenCommitment:"Evitar a dor, o risco ou a responsabilidade envolvidos em reconhecer a própria margem de escolha.",
+        bigAssumption:"Enquanto as circunstâncias ou as pessoas não mudarem, minhas ações terão pouca utilidade.",
+        trigger:"Frustração, injustiça percebida, repetição de problemas ou experiências de impotência.",
+        behaviors:["Focar no que não controla","Esperar mudança externa","Justificar inação","Desconsiderar pequenas escolhas disponíveis"],
+        consequence:"A proteção reduz culpa e risco de tentativa, mas pode enfraquecer senso de agência e perpetuar o padrão.",
+        experiment:"Identifique apenas 10% da situação que está sob sua influência e execute uma ação pequena nessa margem, sem esperar que o restante mude primeiro."
+      }
     };
 
     const QUESTIONS = [{"id":1,"category":"Pais","text":"Quando alguém importante desaprova uma escolha minha, eu sinto que preciso recuar para preservar a relação."},{"id":2,"category":"Pais","text":"Eu evito contrariar figuras de autoridade, mesmo quando acredito que deveria me posicionar."},{"id":3,"category":"Pais","text":"Em situações de tensão, meu corpo e minha mente entram rapidamente em modo de alerta, como se algo ruim pudesse acontecer."},{"id":4,"category":"Pais","text":"Tenho dificuldade de me sentir seguro(a) para ser espontâneo(a) quando existe risco de crítica ou punição."},{"id":5,"category":"Rejeicao","text":"Quando alguém demora a responder ou se afasta, eu tendo a interpretar isso como rejeição."},{"id":6,"category":"Rejeicao","text":"Eu mudo meu jeito de agir para aumentar a chance de ser aceito(a) pelas pessoas."},{"id":7,"category":"Rejeicao","text":"Tenho receio de mostrar partes reais de mim e acabar não sendo aceito(a)."},{"id":8,"category":"Rejeicao","text":"Quando percebo distância emocional em alguém, sinto necessidade de recuperar rapidamente sua aprovação."},{"id":9,"category":"Autoimagem","text":"Eu me comparo com outras pessoas e frequentemente concluo que estou abaixo delas."},{"id":10,"category":"Autoimagem","text":"Mesmo quando recebo elogios, tenho dificuldade de acreditar plenamente no meu próprio valor."},{"id":11,"category":"Autoimagem","text":"Diante de uma oportunidade maior, surge em mim o pensamento de que talvez eu não seja capaz."},{"id":12,"category":"Autoimagem","text":"Um erro pode fazer eu questionar minha competência de forma muito maior do que a situação justificaria."},{"id":13,"category":"Depressao","text":"Eu antecipo problemas e cenários negativos antes de ter evidências de que realmente acontecerão."},{"id":14,"category":"Depressao","text":"Tenho dificuldade de relaxar quando não consigo prever ou controlar o que virá depois."},{"id":15,"category":"Depressao","text":"Quando algo dá errado, minha mente continua revisitando o problema por muito tempo."},{"id":16,"category":"Depressao","text":"Eu adio decisões porque penso demais nas consequências e nos riscos possíveis."},{"id":17,"category":"Culpa","text":"Eu me sinto responsável pelo bem-estar emocional de pessoas próximas."},{"id":18,"category":"Culpa","text":"Dizer “não” costuma gerar culpa, mesmo quando eu tenho bons motivos para estabelecer um limite."},{"id":19,"category":"Culpa","text":"Quando alguém está frustrado comigo, eu rapidamente procuro o que fiz de errado."},{"id":20,"category":"Culpa","text":"Eu assumo tarefas ou problemas dos outros para evitar decepcioná-los."},{"id":21,"category":"Criticas","text":"Eu demoro para concluir algo porque sinto que ainda não está bom o suficiente."},{"id":22,"category":"Criticas","text":"Pequenos erros meus recebem uma crítica interna muito mais dura do que eu faria a outra pessoa."},{"id":23,"category":"Criticas","text":"Tenho dificuldade de celebrar uma conquista porque minha atenção vai imediatamente para o que ainda falta."},{"id":24,"category":"Criticas","text":"Quando não tenho certeza de que farei algo muito bem, sinto vontade de adiar, evitar ou me preparar excessivamente."},{"id":25,"category":"Escassez","text":"Mesmo quando tenho recursos suficientes, sinto receio de que eles possam faltar de repente."},{"id":26,"category":"Escassez","text":"Tenho dificuldade de aproveitar uma oportunidade porque penso primeiro no que posso perder."},{"id":27,"category":"Escassez","text":"Quando recebo algo bom, uma parte de mim pensa que talvez não dure."},{"id":28,"category":"Escassez","text":"Eu retenho tempo, dinheiro, energia ou oportunidades por medo de precisar deles depois."},{"id":29,"category":"Procrastinacao","text":"Eu adio tarefas importantes quando elas despertam desconforto, medo de errar ou sensação de incapacidade."},{"id":30,"category":"Procrastinacao","text":"Antes de começar algo relevante, procuro outras tarefas menores para sentir que estou sendo produtivo(a)."},{"id":31,"category":"Procrastinacao","text":"Quando uma tarefa parece grande ou incerta, tenho dificuldade de dar o primeiro passo."},{"id":32,"category":"Procrastinacao","text":"Eu espero me sentir mais confiante, motivado(a) ou preparado(a) antes de agir."},{"id":33,"category":"Timidez","text":"Eu evito me expor quando existe possibilidade de julgamento, constrangimento ou crítica."},{"id":34,"category":"Timidez","text":"Tenho ideias ou opiniões que deixo de expressar por receio da reação das pessoas."},{"id":35,"category":"Timidez","text":"Em ambientes novos, observo bastante antes de agir para reduzir o risco de cometer algum erro social."},{"id":36,"category":"Timidez","text":"Quando sou o centro das atenções, fico excessivamente consciente de como estou sendo percebido(a)."},{"id":37,"category":"Vitimismo","text":"Quando algo não dá certo, minha primeira reação tende a focar no que outras pessoas ou circunstâncias fizeram comigo."},{"id":38,"category":"Vitimismo","text":"Às vezes sinto que minhas opções são muito limitadas pelo que aconteceu no passado ou pelo comportamento dos outros."},{"id":39,"category":"Vitimismo","text":"Tenho dificuldade de perceber qual parte de uma situação ainda está sob minha responsabilidade ou influência."},{"id":40,"category":"Vitimismo","text":"Quando enfrento repetidamente o mesmo problema, tendo a esperar que algo externo mude antes de eu mudar minha estratégia."}];
@@ -236,57 +386,172 @@
       await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
     }
 
+
+    async function loadLogoDataUrl(){
+      try{
+        const response=await fetch("impulso-logo.png",{cache:"force-cache"});
+        const blob=await response.blob();
+        return await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(blob)});
+      }catch(e){return ""}
+    }
+
     async function generateAndSendPDF(scores,avg,sorted,primaryKey){
-      const {jsPDF}=window.jspdf,doc=new jsPDF("p","mm","a4");
-      const name=document.getElementById("name").value.trim(),age=document.getElementById("age").value.trim(),occupation=document.getElementById("occupation").value.trim(),education=document.getElementById("education").value.trim(),email=document.getElementById("email").value.trim(),whatsapp=document.getElementById("whatsapp").value.trim();
-      const profile=DIMENSIONS[primaryKey];let y=14;
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});
+      const pageW=210,pageH=297,margin=16,contentW=pageW-margin*2;
+      const name=document.getElementById("name").value.trim();
+      const age=document.getElementById("age").value.trim();
+      const occupation=document.getElementById("occupation").value.trim();
+      const education=document.getElementById("education").value.trim();
+      const email=document.getElementById("email").value.trim();
+      const whatsapp=document.getElementById("whatsapp").value.trim();
+      const logo=await loadLogoDataUrl();
+      let pageNo=1;
 
-      doc.setFont("helvetica","bold");doc.setFontSize(18);doc.text("Mapa de Bloqueios Emocionais",105,y,{align:"center"});y+=7;
-      doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text("Instituto Impulso IE™ de Liderança",105,y,{align:"center"});y+=8;
-      doc.text("Nome: "+name+" | Idade: "+age+" | Profissão: "+occupation,105,y,{align:"center",maxWidth:185});y+=5;
-      doc.text("Escolaridade: "+education+" | E-mail: "+email,105,y,{align:"center",maxWidth:185});y+=10;
+      function safeText(v){return String(v==null?"":v)}
+      function bandLabel(v){return v<25?"Sinal baixo":v<50?"Atenção leve":v<75?"Sinal relevante":"Sinal elevado"}
+      function addLogo(){
+        if(logo){try{doc.addImage(logo,"PNG",91,10,28,28)}catch(e){}}
+      }
+      function addBrandHeader(title,subtitle){
+        addLogo();
+        doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(9);
+        doc.text("INSTITUTO IMPULSO IE™ DE LIDERANÇA",105,43,{align:"center"});
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(18);
+        doc.text(title,105,53,{align:"center",maxWidth:180});
+        if(subtitle){doc.setTextColor(71,85,105);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(subtitle,105,60,{align:"center",maxWidth:175})}
+        doc.setDrawColor(207,230,255);doc.line(margin,66,pageW-margin,66);
+      }
+      function addFooter(){
+        doc.setDrawColor(226,232,240);doc.line(margin,282,pageW-margin,282);
+        doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7.5);
+        doc.text("Ferramenta educacional de autoconhecimento e coaching. Não constitui diagnóstico clínico.",margin,288);
+        doc.text("Página "+pageNo,pageW-margin,288,{align:"right"});
+      }
+      function newPage(title,subtitle){
+        if(pageNo>1) doc.addPage();
+        addBrandHeader(title,subtitle);addFooter();pageNo++;
+        return 74;
+      }
+      function addParagraph(text,x,y,w,size=9,color=[51,65,85],style="normal",lineH=4.5){
+        doc.setTextColor(...color);doc.setFont("helvetica",style);doc.setFontSize(size);
+        const lines=doc.splitTextToSize(safeText(text),w);doc.text(lines,x,y);
+        return y+lines.length*lineH;
+      }
+      function addLabelValue(label,value,y){
+        doc.setTextColor(11,99,206);doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.text(label.toUpperCase(),margin,y);
+        y=addParagraph(value,margin,y+5,contentW,9,[30,41,59],"normal",4.6);
+        return y+4;
+      }
+      function drawScoreBar(label,value,y){
+        doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(31,41,55);doc.text(label,margin,y);
+        doc.setTextColor(11,99,206);doc.text(value+"%",pageW-margin,y,{align:"right"});
+        y+=3;doc.setFillColor(230,238,252);doc.roundedRect(margin,y,contentW,5,2.5,2.5,"F");
+        const fill=Math.max(0,Math.min(contentW,contentW*(value/100)));doc.setFillColor(11,99,206);doc.roundedRect(margin,y,fill,5,2.5,2.5,"F");
+        return y+10;
+      }
+      function drawCycle(items,y){
+        doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(6,59,122);doc.text("Ciclo provável do bloqueio",margin,y);y+=7;
+        items.forEach((item,idx)=>{
+          doc.setFillColor(239,248,255);doc.setDrawColor(186,230,253);
+          doc.roundedRect(margin,y,contentW,12,3,3,"FD");
+          doc.setFont("helvetica","bold");doc.setFontSize(7.5);doc.setTextColor(11,99,206);doc.text((idx+1)+". "+item.label,margin+4,y+4);
+          doc.setFont("helvetica","normal");doc.setTextColor(51,65,85);doc.text(doc.splitTextToSize(item.value,contentW-8),margin+4,y+8);
+          y+=15;
+        });
+        return y;
+      }
 
-      doc.setFont("helvetica","bold");doc.setFontSize(13);doc.text("Bloqueio predominante: "+profile.label+" — "+scores[primaryKey]+"%",18,y,{maxWidth:175});y+=8;
-      doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(profile.summary,18,y,{maxWidth:175});y+=14;
-      doc.setFont("helvetica","bold");doc.text("Crença associada:",18,y);doc.setFont("helvetica","normal");doc.text(profile.belief,50,y,{maxWidth:142});y+=8;
-      doc.setFont("helvetica","bold");doc.text("Medo central:",18,y);doc.setFont("helvetica","normal");doc.text(profile.fear,44,y,{maxWidth:148});y+=8;
-      doc.setFont("helvetica","bold");doc.text("Proteção típica:",18,y);doc.setFont("helvetica","normal");doc.text(profile.protection,46,y,{maxWidth:146});y+=10;
+      // CAPA / SÍNTESE
+      let y=newPage("Mapa de Bloqueios Emocionais","Relatório individual de autoconhecimento");
+      doc.setFillColor(244,249,255);doc.setDrawColor(207,230,255);doc.roundedRect(margin,y,contentW,29,4,4,"FD");
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(name,margin+5,y+8);
+      doc.setTextColor(71,85,105);doc.setFont("helvetica","normal");doc.setFontSize(8.5);
+      doc.text("Idade: "+age+"   |   Profissão: "+occupation,margin+5,y+15,{maxWidth:contentW-10});
+      doc.text("Escolaridade: "+education+"   |   E-mail: "+email,margin+5,y+22,{maxWidth:contentW-10});
+      y+=38;
+      const primary=DIMENSIONS[primaryKey];
+      doc.setFillColor(6,59,122);doc.roundedRect(margin,y,contentW,34,5,5,"F");
+      doc.setTextColor(186,230,253);doc.setFont("helvetica","bold");doc.setFontSize(8);doc.text("BLOQUEIO PREDOMINANTE",margin+6,y+7);
+      doc.setTextColor(255,255,255);doc.setFontSize(15);doc.text(primary.label,margin+6,y+16,{maxWidth:contentW-34});
+      doc.setFontSize(22);doc.text(scores[primaryKey]+"%",pageW-margin-6,y+19,{align:"right"});
+      doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(primary.summary,margin+6,y+27,{maxWidth:contentW-12});
+      y+=43;
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Seus 3 sinais mais fortes",margin,y);y+=8;
+      sorted.slice(0,3).forEach(([k,v],i)=>{
+        doc.setFillColor(248,252,255);doc.setDrawColor(216,231,251);doc.roundedRect(margin,y,contentW,18,4,4,"FD");
+        doc.setTextColor(100,116,139);doc.setFontSize(8);doc.text((i+1)+"º SINAL",margin+5,y+6);
+        doc.setTextColor(15,47,87);doc.setFontSize(10);doc.text(DIMENSIONS[k].label,margin+5,y+13,{maxWidth:contentW-35});
+        doc.setTextColor(11,99,206);doc.setFontSize(15);doc.text(v+"%",pageW-margin-5,y+12,{align:"right"});y+=22;
+      });
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Índice Geral de Bloqueios: "+avg+"%",margin,y);y+=7;
+      y=addParagraph("Este índice resume a intensidade média dos dez grupos avaliados. Ele não mede gravidade clínica; serve como referência comparativa para sua autoanálise.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
 
-      doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("3 sinais mais fortes",18,y);y+=7;doc.setFontSize(9);
-      sorted.slice(0,3).forEach(([k,v],i)=>{doc.setFont("helvetica","bold");doc.text((i+1)+". "+DIMENSIONS[k].label+" — "+v+"%",20,y);y+=6});
+      // DETALHE DOS 3 PRINCIPAIS
+      sorted.slice(0,3).forEach(([key,value],rank)=>{
+        const d=DIMENSIONS[key],deep=DEEP_ANALYSIS[key];
+        let yy=newPage((rank+1)+"º padrão — "+d.label,value+"% • "+bandLabel(value));
+        yy=addLabelValue("Leitura do padrão",d.summary,yy);
+        yy=addLabelValue("Crença associada",d.belief,yy);
+        yy=addLabelValue("Medo central",d.fear,yy);
+        yy=addLabelValue("O que a proteção tenta preservar",d.protection,yy);
+        yy=addLabelValue("Compromisso oculto provável",deep.hiddenCommitment,yy);
+        yy=addLabelValue("Grande pressuposto a investigar",deep.bigAssumption,yy);
+        yy=addLabelValue("Custo provável",d.cost,yy);
+        if(yy>205){doc.addPage();addBrandHeader("Continuação — "+d.label,"Análise detalhada");addFooter();pageNo++;yy=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Comportamentos que podem aparecer",margin,yy);yy+=6;
+        deep.behaviors.forEach(b=>{yy=addParagraph("• "+b,margin+2,yy,contentW-2,8.7,[51,65,85],"normal",4.3)+1});
+        yy+=3;
+        yy=drawCycle([
+          {label:"Gatilho",value:deep.trigger},
+          {label:"Crença / pressuposto",value:deep.bigAssumption},
+          {label:"Medo",value:d.fear},
+          {label:"Proteção",value:d.protection},
+          {label:"Comportamento",value:deep.behaviors[0]},
+          {label:"Consequência",value:deep.consequence}
+        ],yy);
+        if(yy>245){doc.addPage();addBrandHeader("Próximo passo — "+d.label,"Perguntas de coaching e teste da crença");addFooter();pageNo++;yy=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Perguntas de coaching",margin,yy);yy+=7;
+        d.questions.forEach(q=>{yy=addParagraph("• "+q,margin+2,yy,contentW-2,8.7,[51,65,85],"normal",4.4)+2});
+        yy+=2;yy=addLabelValue("Experimento seguro para testar a crença",deep.experiment,yy);
+      });
 
-      y+=2;doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Mapa das 10 dimensões",18,y);y+=7;doc.setFontSize(9);
-      sorted.forEach(([k,v])=>{doc.setFont("helvetica","normal");doc.text(DIMENSIONS[k].label,20,y);doc.setFont("helvetica","bold");doc.text(v+"%",190,y,{align:"right"});y+=5.5});
-      y+=5;doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text("Índice Geral de Bloqueios: "+avg+"%",105,y,{align:"center"});y+=10;
+      // MAPA COMPLETO E PLANO
+      y=newPage("Mapa completo das 10 dimensões","Visão comparativa e próximos passos");
+      sorted.forEach(([k,v])=>{y=drawScoreBar(DIMENSIONS[k].label,v,y)});
+      y+=2;
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Como usar este relatório",margin,y);y+=7;
+      y=addParagraph("1. Escolha apenas um dos três padrões predominantes para trabalhar primeiro. 2. Observe situações reais em que o padrão aparece. 3. Registre a previsão que sua mente faz. 4. Faça um experimento pequeno e seguro. 5. Compare a previsão com o que realmente aconteceu.",margin,y,contentW,8.7,[51,65,85],"normal",4.5);
+      y+=4;
+      y=addParagraph("A lógica utilizada neste relatório é inspirada em abordagens de mudança que investigam não apenas o comportamento visível, mas também o que ele tenta proteger. O objetivo é transformar crenças tratadas como certezas em hipóteses que possam ser observadas e testadas com segurança.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
 
-      doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("Perguntas de coaching",18,y);y+=6;doc.setFont("helvetica","normal");doc.setFontSize(9);
-      profile.questions.forEach(q=>{const lines=doc.splitTextToSize("• "+q,170);doc.text(lines,20,y);y+=lines.length*4.5+2});
-
-      doc.setFontSize(8);doc.setTextColor(90);doc.text("Ferramenta educacional de autoconhecimento e coaching. Não substitui avaliação psicológica, psicoterapia ou diagnóstico clínico.",18,285,{maxWidth:175});
-      doc.setTextColor(0);
+      const pages=doc.getNumberOfPages();
+      for(let p=1;p<=pages;p++){doc.setPage(p);doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text("Página "+p+" de "+pages,pageW-margin,288,{align:"right"})}
 
       const pdfName="Mapa_Bloqueios_Emocionais_"+name.replace(/[^A-Za-zÀ-ÿ0-9]+/g,"_")+".pdf";
       const dataUri=doc.output("datauristring"),pdfBase64=dataUri.split(",")[1]||"";
       const submissionId=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():"bloqueios-"+Date.now()+"-"+Math.random().toString(36).slice(2);
-
+      const analysisPayload={
+        primaryKey,
+        top3:sorted.slice(0,3).map(([k,v])=>({key:k,label:DIMENSIONS[k].label,score:v,belief:DIMENSIONS[k].belief,hiddenCommitment:DEEP_ANALYSIS[k].hiddenCommitment,bigAssumption:DEEP_ANALYSIS[k].bigAssumption}))
+      };
       const payload={
-        apiKey:API_KEY,submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v3",
+        apiKey:API_KEY,submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v4",
         nome:name,email,whatsapp,idade:age,profissao:occupation,escolaridade:education,
-        perfilPrimario:profile.label+" ("+scores[primaryKey]+"%)",
-        perfilSecundario:"Índice Geral: "+avg+"%",
-        pctD:scores.Pais,pctI:scores.Rejeicao,pctS:scores.Autoimagem,pctC:scores.Depressao,
-        scoresJson:JSON.stringify(scores),mediaTotal:avg,pdfBase64,pdfFileName:pdfName,sendEmail:true,notifyAdmin:true
+        perfilPrimario:primary.label+" ("+scores[primaryKey]+"%)",perfilSecundario:"Índice Geral: "+avg+"%",
+        scoresJson:JSON.stringify(scores),analysisJson:JSON.stringify(analysisPayload),mediaTotal:avg,
+        pdfBase64,pdfFileName:pdfName,sendEmail:true,notifyAdmin:true
       };
 
-      setAutoStatus("Enviando seu resultado ao sistema Impulso e preparando o PDF...","pending");
+      setAutoStatus("Enviando seu relatório detalhado por e-mail e registrando o PDF no sistema Impulso...","pending");
       try{
         await postResultToScript(payload);
-        doc.save(pdfName);
-        setAutoStatus("✅ Resultado enviado ao sistema Impulso. O PDF também foi salvo neste dispositivo.","success");
+        setAutoStatus("✅ Pesquisa concluída. Seu relatório detalhado está sendo enviado ao e-mail informado e ficará registrado no sistema Impulso.","success");
       }catch(error){
         console.error(error);doc.save(pdfName);
-        setAutoStatus("⚠️ O PDF foi salvo, mas o envio ao sistema não pôde ser iniciado. Tente novamente ou entre em contato com impulsoflow@gmail.com.","error");
+        setAutoStatus("⚠️ Não foi possível iniciar o envio automático. O PDF foi salvo neste dispositivo como segurança.","error");
       }
     }
+
   </script>
 </body></html>

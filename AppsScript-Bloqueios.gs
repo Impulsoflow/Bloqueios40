@@ -16,7 +16,6 @@
 const CONFIG = Object.freeze({
   spreadsheetId: "1CrQJx-M-u5F9G6RQ7X6fThwaF5OU2gcRPlkrRRp8WPQ",
   sheetName: "Bloqueios Emocionais",
-  apiKey: "2026Impulso$",
   adminEmail: "impulsoflow@gmail.com",
   senderName: "Instituto Impulso Coaching de Liderança",
   maxPdfBase64Length: 8500000,
@@ -53,13 +52,44 @@ const HEADERS = [
   "Meta de Mudança"
 ];
 
-function doGet() {
-  return jsonResponse_({
-    ok: true,
-    service: "Mapa de Bloqueios Emocionais — Impulso",
-    version: "2026-08-27-v4",
-    sheet: CONFIG.sheetName
-  });
+function doGet(e) {
+  const submissionId = clean_(e && e.parameter && e.parameter.submissionId);
+  if (!submissionId) {
+    return jsonResponse_({
+      ok: true,
+      service: "Mapa de Bloqueios Emocionais — Impulso",
+      version: "2026-08-28-v4",
+      sheet: CONFIG.sheetName
+    }, callbackName_(e));
+  }
+
+  try {
+    const spreadsheet = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+    const sheet = spreadsheet.getSheetByName(CONFIG.sheetName);
+    const row = sheet ? findSubmissionRow_(sheet, submissionId) : 0;
+    if (!row) {
+      return jsonResponse_({ ok: false, pending: true }, callbackName_(e));
+    }
+
+    const emailStatus = String(sheet.getRange(row, 22).getValue()).toUpperCase();
+    const error = clean_(sheet.getRange(row, 23).getValue());
+    return jsonResponse_({
+      ok: emailStatus === "SIM",
+      saved: true,
+      emailSent: emailStatus === "SIM",
+      pending: emailStatus === "PENDENTE",
+      submissionId: submissionId,
+      row: row,
+      message: error || undefined
+    }, callbackName_(e));
+  } catch (error) {
+    return jsonResponse_({
+      ok: false,
+      saved: false,
+      pending: false,
+      message: errorMessage_(error)
+    }, callbackName_(e));
+  }
 }
 
 function doPost(e) {
@@ -195,9 +225,7 @@ function parsePayload_(e) {
 }
 
 function validatePayload_(payload) {
-  if (!payload || clean_(payload.apiKey) !== CONFIG.apiKey) {
-    throw new Error("Chave de acesso inválida.");
-  }
+  if (!payload) throw new Error("Payload não informado.");
   if (!clean_(payload.nome)) throw new Error("Nome não informado.");
 
   const email = clean_(payload.email).toLowerCase();

@@ -11,7 +11,7 @@ test("keeps the 40-question questionnaire and Central access control", () => {
 });
 
 test("automatically sends the generated PDF to the Bloqueios Apps Script", () => {
-  assert.match(page, /AKfycbwzUpg5e7Hx2qlPqDymrGz1lTkHQJZcOcU2M9TN4dlFD8qL1aXPsa1VkdjX_JikkfFBHw/);
+  assert.match(page, /const WEB_APP_URL = "https:\/\/script\.google\.com\/macros\/s\/[^\"]+\/exec"/);
   assert.match(page, /testId:"bloqueios_emocionais_40_v4"/);
   assert.match(page, /pdfBase64,pdfFileName:pdfName/);
   assert.match(page, /pdfBase64,pdfFileName:pdfName,sendEmail:true/);
@@ -28,4 +28,12 @@ test("only reports success after a readable backend confirmation", () => {
   assert.doesNotMatch(page, /mode:"no-cors"/);
   assert.match(page, /data=await response\.json\(\)/);
   assert.match(page, /data\.ok!==true/);
+});
+
+test("places the detailed ten-dimension map before the deep explanations", () => {
+  const mapPosition = page.indexOf('// MAPA COMPLETO LOGO NO INÍCIO');
+  const detailPosition = page.indexOf('// DETALHE DOS 3 PRINCIPAIS');
+  assert.ok(mapPosition > 0 && detailPosition > mapPosition);
+  assert.match(page, /drawDimensionSummary\(\(index\+1\)\+"\. "\+d\.label,value,d\.summary,y\)/);
+  assert.match(page, /Percentuais e resumo interpretativo de cada dimensão/);
 });

@@ -148,6 +148,7 @@
     
     <section id="step-result" class="step">
       <h2 class="result-title">Seu Mapa de Bloqueios Emocionais</h2>
+      <div id="auto-send-status" class="auto-status pending hidden">Preparando seu relatório...</div>
       <div id="primary-result" class="result-hero">
         <small>Bloqueio predominante</small>
         <h3 id="primary-name">—</h3>
@@ -185,7 +186,6 @@
         <p style="margin:0;color:#374151">O mapa procura organizar sinais de crenças, medos e estratégias de proteção. Uma pontuação alta não significa que você “tem um problema”; indica apenas que aquele padrão apareceu com maior frequência nas suas respostas e merece investigação consciente.</p>
       </div>
 
-      <div id="auto-send-status" class="auto-status pending hidden">Preparando seu relatório...</div>
       <div class="disclaimer"><strong>Importante:</strong> esta é uma ferramenta educacional de autoconhecimento e coaching. Ela não substitui avaliação psicológica, psicoterapia ou diagnóstico clínico.</div>
     </section>
   </div></main>
@@ -194,7 +194,7 @@
   <script>
     "use strict";
 
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzUpg5e7Hx2qlPqDymrGz1lTkHQJZcOcU2M9TN4dlFD8qL1aXPsa1VkdjX_JikkfFBHw/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzSb2yiFLIE8ueWKzX14bxBsNtgMkM9jHo8qq0HLFPM59k1rrsRsSE0r0rcuuAxjEe7/exec";
     const RESPONSE_OPTIONS = [
       {value:0,text:"Nunca ou quase nunca"},
       {value:1,text:"Raramente"},
@@ -215,6 +215,24 @@
       Timidez:{label:"Exposição e Vulnerabilidade",short:"Vulnerabilidade",belief:"“Se eu me expuser, posso ser julgado(a) ou envergonhado(a).”",fear:"Julgamento, constrangimento, crítica ou perda de imagem.",protection:"Observar, evitar exposição, falar menos e controlar a própria apresentação.",cost:"Reduzir presença, oportunidades e expressão autêntica.",summary:"Você pode estar protegendo sua imagem por meio de baixa exposição e monitoramento intenso da reação dos outros.",questions:["Que julgamento você imagina que as pessoas fariam se você se expusesse?","Qual evidência existe de que esse julgamento seria tão grave quanto parece?","Qual exposição pequena e segura poderia ampliar sua liberdade?"]},
       Vitimismo:{label:"Impotência e Locus Externo",short:"Impotência percebida",belief:"“Minha vida depende principalmente do que os outros ou as circunstâncias fizerem.”",fear:"Assumir responsabilidade e descobrir que a mudança exige escolhas difíceis.",protection:"Esperar mudança externa, justificar inação e focar no que não controla.",cost:"Diminuir senso de agência e repetir padrões.",summary:"Você pode estar concentrando atenção no que está fora do seu controle e deixando de enxergar sua margem real de escolha.",questions:["Que 10% desta situação ainda está sob sua influência?","O que você ganharia e o que perderia ao assumir essa parte da responsabilidade?","Qual escolha concreta depende de você, mesmo que o restante não dependa?"]}
     };
+
+    const DISPLAY_LABELS = Object.freeze({
+      Pais:"Pais Ditadores",
+      Rejeicao:"Rejeição",
+      Autoimagem:"Autoimagem",
+      Depressao:"Depressão e Ansiedade",
+      Culpa:"Culpa/Autopunição",
+      Criticas:"Críticas",
+      Escassez:"Mentalidade de Escassez",
+      Procrastinacao:"Procrastinação/Autossabotagem",
+      Timidez:"Timidez/Vulnerabilidade",
+      Vitimismo:"Vitimismo/Impotência"
+    });
+
+    Object.keys(DISPLAY_LABELS).forEach(key=>{
+      DIMENSIONS[key].label=DISPLAY_LABELS[key];
+      DIMENSIONS[key].short=DISPLAY_LABELS[key];
+    });
 
 
     const DEEP_ANALYSIS = {
@@ -376,6 +394,7 @@
       if(Object.keys(answers).length<TOTAL_Q){alert("Ainda existem perguntas sem resposta.");return}
       const scores=calculateScores();
       const result=renderScores(scores);
+      setAutoStatus("Preparando e enviando seu relatório...","pending");
       document.getElementById("step-quiz").classList.remove("active");
       document.getElementById("step-result").classList.add("active");
       window.scrollTo({top:0,behavior:"smooth"});

@@ -384,7 +384,11 @@
     }
 
     async function postResultToScript(payload){
-      await fetch(WEB_APP_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+      const response=await fetch(WEB_APP_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+      let data=null;
+      try{data=await response.json()}catch(error){throw new Error("O servidor não retornou uma confirmação válida.")}
+      if(!response.ok||!data||data.ok!==true){throw new Error((data&&(data.message||data.error))||"O servidor não confirmou o envio do relatório.")}
+      return data;
     }
 
 
@@ -551,7 +555,7 @@
       setAutoStatus("Enviando seu relatório detalhado por e-mail e registrando o PDF no sistema Impulso...","pending");
       try{
         await postResultToScript(payload);
-        setAutoStatus("✅ Pesquisa concluída. Seu relatório detalhado está sendo enviado ao e-mail informado e ficará registrado no sistema Impulso.","success");
+        setAutoStatus("✅ Relatório processado automaticamente. O PDF foi enviado ao e-mail informado e registrado no sistema Impulso.","success");
       }catch(error){
         console.error(error);doc.save(pdfName);
         setAutoStatus("⚠️ Não foi possível iniciar o envio automático. O PDF foi salvo neste dispositivo como segurança.","error");

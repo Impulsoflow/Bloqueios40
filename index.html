@@ -88,7 +88,7 @@
     .top-three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
     .rank-card{border:1px solid #d8e7fb;background:linear-gradient(180deg,#fff,#f6fbff);border-radius:14px;padding:15px;text-align:center}
     .rank-card .rank{font:900 11px Arial,sans-serif;color:#64748b;text-transform:uppercase}.rank-card .pct{font-size:30px;font-weight:900;color:#0b63ce;line-height:1.1;margin:5px 0}.rank-card .name{font-size:12px;font-weight:800;color:#0f2f57;line-height:1.25}
-    .score-row{margin-bottom:16px}.score-row p{font-weight:800;margin:0 0 6px;color:#1f2937}.bar{background:#e5e7eb;height:28px;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
+    .score-row{margin-bottom:22px}.score-row>p{font-weight:800;margin:0 0 6px;color:#1f2937}.score-row .concept-explanation{font-size:13px;font-weight:400;line-height:1.5;color:#475569;margin:8px 2px 0}.bar{background:#e5e7eb;height:28px;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
     .fill{height:100%;width:0;position:relative;border-radius:999px;transition:width .8s}.fill:after{content:attr(data-percent);position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:900;color:#fff}
     .average{font-size:30px;font-weight:900;text-align:center;margin:22px 0 4px;color:#1f2937}.average span{color:#0b63ce}
     .coaching-box,.info-box{background:linear-gradient(180deg,#eff8ff,#fff);border:1px solid #bae6fd;border-radius:16px;padding:20px;margin:18px 0;box-shadow:var(--shadow2)}
@@ -227,6 +227,19 @@
       Procrastinacao:"Procrastinação/Autossabotagem",
       Timidez:"Timidez/Vulnerabilidade",
       Vitimismo:"Vitimismo/Impotência"
+    });
+
+    const CONCEPT_EXPLANATIONS = Object.freeze({
+      Pais:"Indica marcas de ambientes familiares autoritários, controladores ou pouco seguros. Esse padrão pode gerar medo de discordar, necessidade de aprovação e dificuldade de se posicionar com autonomia.",
+      Rejeicao:"Representa sensibilidade ao afastamento, à desaprovação ou à perda de vínculos. Pode levar a pessoa a esconder partes de si, adaptar-se excessivamente ou buscar confirmação constante de que é aceita.",
+      Autoimagem:"Reflete uma percepção diminuída do próprio valor, capacidade ou merecimento. Pode aparecer em comparações frequentes, dificuldade de receber elogios e insegurança diante de desafios ou oportunidades.",
+      Depressao:"Aponta tendência a antecipar ameaças, preocupar-se excessivamente ou permanecer preso(a) a pensamentos sobre o passado e o futuro. Não representa diagnóstico clínico de depressão ou ansiedade.",
+      Culpa:"Indica tendência a assumir responsabilidades que pertencem aos outros e a punir-se por erros, limites ou frustrações alheias. Pode produzir sobrecarga, dificuldade de dizer não e cobrança interna excessiva.",
+      Criticas:"Representa uma postura rígida de julgamento sobre si ou sobre os outros. Pode surgir como perfeccionismo, medo de errar, insatisfação constante e dificuldade de reconhecer avanços e conquistas.",
+      Escassez:"Reflete a sensação de que recursos, oportunidades, apoio ou segurança podem faltar a qualquer momento. Pode levar à retenção, ao medo de investir e a decisões guiadas mais pela possibilidade de perda do que pela realidade atual.",
+      Procrastinacao:"Indica adiamento de ações importantes como forma de evitar desconforto, risco, cobrança ou medo de falhar. A autossabotagem aparece quando esse adiamento enfraquece objetivos que a própria pessoa considera importantes.",
+      Timidez:"Representa receio de exposição, julgamento ou constrangimento ao mostrar ideias, sentimentos e capacidades. Pode limitar a expressão autêntica, a presença social e o aproveitamento de oportunidades.",
+      Vitimismo:"Reflete a percepção de que a própria vida depende principalmente das circunstâncias ou das decisões de outras pessoas. Pode reduzir o senso de escolha, responsabilidade e influência sobre aquilo que ainda pode ser transformado."
     });
 
     Object.keys(DISPLAY_LABELS).forEach(key=>{
@@ -375,7 +388,12 @@
       sorted.slice(0,3).forEach(([key,val],i)=>{const d=document.createElement("div");d.className="rank-card";d.innerHTML='<div class="rank">'+(i+1)+'º sinal</div><div class="pct">'+val+'%</div><div class="name">'+DIMENSIONS[key].label+'</div>';top.appendChild(d)});
 
       const scoresEl=document.getElementById("scores");scoresEl.innerHTML="";
-      sorted.forEach(([key,val])=>{const row=document.createElement("div");row.className="score-row";row.innerHTML='<p>'+DIMENSIONS[key].label+': <span>'+val+'%</span></p><div class="bar"><div class="fill" style="width:'+val+'%;background:linear-gradient(90deg,#38bdf8,#0b63ce)" data-percent="'+val+'%"></div></div>';scoresEl.appendChild(row)});
+      sorted.forEach(([key,val])=>{
+        const row=document.createElement("div");row.className="score-row";
+        row.innerHTML='<p>'+DIMENSIONS[key].label+': <span>'+val+'%</span></p><div class="bar"><div class="fill" style="width:'+val+'%;background:linear-gradient(90deg,#38bdf8,#0b63ce)" data-percent="'+val+'%"></div></div>';
+        const explanation=document.createElement("p");explanation.className="concept-explanation";explanation.textContent=CONCEPT_EXPLANATIONS[key];
+        row.appendChild(explanation);scoresEl.appendChild(row);
+      });
 
       const avg=Math.round(Object.values(scores).reduce((a,b)=>a+b,0)/Object.keys(scores).length);
       document.getElementById("averageScore").textContent=avg+"%";
@@ -550,6 +568,17 @@
       y=addParagraph("1. Escolha apenas um dos três padrões predominantes para trabalhar primeiro. 2. Observe situações reais em que o padrão aparece. 3. Registre a previsão que sua mente faz. 4. Faça um experimento pequeno e seguro. 5. Compare a previsão com o que realmente aconteceu.",margin,y,contentW,8.7,[51,65,85],"normal",4.5);
       y+=4;
       y=addParagraph("A lógica utilizada neste relatório é inspirada em abordagens de mudança que investigam não apenas o comportamento visível, mas também o que ele tenta proteger. O objetivo é transformar crenças tratadas como certezas em hipóteses que possam ser observadas e testadas com segurança.",margin,y,contentW,8.5,[71,85,105],"normal",4.4);
+
+      // GLOSSÁRIO DOS CONCEITOS
+      y=newPage("Entenda cada conceito","Leitura simples das 10 dimensões avaliadas");
+      Object.keys(DIMENSIONS).forEach(k=>{
+        const explanation=CONCEPT_EXPLANATIONS[k];
+        const lines=doc.splitTextToSize(explanation,contentW);
+        const blockHeight=8+(lines.length*4.2)+5;
+        if(y+blockHeight>278){doc.addPage();addBrandHeader("Entenda cada conceito","Continuação");addFooter();pageNo++;y=74}
+        doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.text(DIMENSIONS[k].label,margin,y);y+=6;
+        doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(lines,margin,y);y+=lines.length*4.2+6;
+      });
 
       const pages=doc.getNumberOfPages();
       for(let p=1;p<=pages;p++){doc.setPage(p);doc.setTextColor(100,116,139);doc.setFont("helvetica","normal");doc.setFontSize(7.5);doc.text("Página "+p+" de "+pages,pageW-margin,288,{align:"right"})}

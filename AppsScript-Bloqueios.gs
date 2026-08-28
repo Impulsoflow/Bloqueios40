@@ -14,7 +14,7 @@
  */
 
 const CONFIG = Object.freeze({
-  spreadsheetId: "1CrQJx-M-u5F9G6RQ7X6fThwaF5OU2gcRPlkrRRp8WPQ",
+  spreadsheetId: "1aDUgy_GJl4tewYurYhnSf97sSZfU41egrDSnWp0X2zQ",
   sheetName: "Bloqueios Emocionais",
   adminEmail: "impulsoflow@gmail.com",
   senderName: "Instituto Impulso Coaching de Liderança",
@@ -52,6 +52,13 @@ const HEADERS = [
   "Meta de Mudança"
 ];
 
+function authorizeServices_() {
+  SpreadsheetApp.openById(CONFIG.spreadsheetId).getName();
+  DriveApp.getRootFolder().getName();
+  GmailApp.getAliases();
+  return "Serviços autorizados";
+}
+
 function doGet(e) {
   const submissionId = clean_(e && e.parameter && e.parameter.submissionId);
   if (!submissionId) {
@@ -64,7 +71,7 @@ function doGet(e) {
   }
 
   try {
-    const spreadsheet = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+    const spreadsheet = getResultsSpreadsheet_();
     const sheet = spreadsheet.getSheetByName(CONFIG.sheetName);
     const row = sheet ? findSubmissionRow_(sheet, submissionId) : 0;
     if (!row) {
@@ -92,6 +99,40 @@ function doGet(e) {
   }
 }
 
+function migrateResultsToImpulso_() {
+  const properties = PropertiesService.getScriptProperties();
+  const existingId = clean_(properties.getProperty("RESULTS_SPREADSHEET_ID"));
+  if (existingId) {
+    const existing = SpreadsheetApp.openById(existingId);
+    return { ok: true, spreadsheetId: existingId, spreadsheetUrl: existing.getUrl(), reused: true };
+  }
+
+  const source = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+  const target = SpreadsheetApp.create("Mapa Impulso — Resultados");
+  target.setSpreadsheetTimeZone("America/Sao_Paulo");
+
+  source.getSheets().forEach(function(sheet) {
+    sheet.copyTo(target).setName(sheet.getName());
+  });
+
+  const defaultSheet = target.getSheetByName("Página1") || target.getSheetByName("Sheet1");
+  if (defaultSheet && target.getSheets().length > 1) target.deleteSheet(defaultSheet);
+
+  properties.setProperty("RESULTS_SPREADSHEET_ID", target.getId());
+
+  return {
+    ok: true,
+    spreadsheetId: target.getId(),
+    spreadsheetUrl: target.getUrl(),
+    owner: Session.getEffectiveUser().getEmail()
+  };
+}
+
+function getResultsSpreadsheet_() {
+  const id = clean_(PropertiesService.getScriptProperties().getProperty("RESULTS_SPREADSHEET_ID")) || CONFIG.spreadsheetId;
+  return SpreadsheetApp.openById(id);
+}
+
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
@@ -100,7 +141,7 @@ function doPost(e) {
     const payload = parsePayload_(e);
     validatePayload_(payload);
 
-    const spreadsheet = SpreadsheetApp.openById(CONFIG.spreadsheetId);
+    const spreadsheet = getResultsSpreadsheet_();
     const sheet = spreadsheet.getSheetByName(CONFIG.sheetName) || spreadsheet.insertSheet(CONFIG.sheetName);
     ensureHeaders_(sheet);
 

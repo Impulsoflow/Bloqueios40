@@ -43,7 +43,7 @@ const HEADERS = [
   "Exposição e Vulnerabilidade",
   "Impotência e Locus Externo",
   "Índice Geral",
-  "Resultados (JSON)",
+  "Resultados / Análise (JSON)",
   "Arquivo PDF",
   "E-mail enviado",
   "Erro",

@@ -1,5 +1,5 @@
 /**
- * Backend Google Apps Script — Mapa de Bloqueios Emocionais (40 questões)
+ * Backend Google Apps Script — Pesquisa Bloqueios Emocionais (40 questões)
  * Padrão Impulso: salva em planilha, evita duplicidade, envia PDF e registra status.
  *
  * PLANILHA: Mapa Impulso — Resultados
@@ -41,7 +41,7 @@ const HEADERS = [
   "Evitação e Procrastinação",
   "Exposição e Vulnerabilidade",
   "Impotência e Locus Externo",
-  "Média Total",
+  "Índice Geral",
   "Resultados (JSON)",
   "Arquivo PDF",
   "E-mail enviado",
@@ -87,14 +87,14 @@ function doPost(e) {
         clean_(payload.profissao),
         scores.Pais,
         scores.Rejeicao,
-        scores.Inadequação e Valor Pessoal,
+        scores.Autoimagem,
         scores.Depressao,
-        scores.Culpa e Hiperresponsabilidade,
+        scores.Culpa,
         scores.Criticas,
-        scores.Escassez e Segurança,
+        scores.Escassez,
         scores.Procrastinacao,
-        scores.Exposição e Vulnerabilidade,
-        scores.Impotência e Locus Externo,
+        scores.Timidez,
+        scores.Vitimismo,
         Number(payload.mediaTotal || 0),
         JSON.stringify(scores),
         clean_(payload.pdfFileName),
@@ -237,14 +237,14 @@ function getScores_(payload) {
   return {
     Pais: Number(payload.pais || 0),
     Rejeicao: Number(payload.rejeicao || 0),
-    Inadequação e Valor Pessoal: Number(payload.autoimagem || 0),
+    Autoimagem: Number(payload.autoimagem || 0),
     Depressao: Number(payload.depressao || 0),
-    Culpa e Hiperresponsabilidade: Number(payload.culpa || 0),
+    Culpa: Number(payload.culpa || 0),
     Criticas: Number(payload.criticas || 0),
-    Escassez e Segurança: Number(payload.escassez || 0),
+    Escassez: Number(payload.escassez || 0),
     Procrastinacao: Number(payload.procrastinacao || 0),
-    Exposição e Vulnerabilidade: Number(payload.timidez || 0),
-    Impotência e Locus Externo: Number(payload.vitimismo || 0)
+    Timidez: Number(payload.timidez || 0),
+    Vitimismo: Number(payload.vitimismo || 0)
   };
 }
 
@@ -256,17 +256,17 @@ function sendClientReport_(payload) {
 
   const clientName = clean_(payload.nome);
   const media = Number(payload.mediaTotal || 0);
-  const subject = "Seu resultado — Bloqueios Emocionais";
+  const subject = "Seu resultado — Mapa de Bloqueios Emocionais";
   const plainText =
     "Olá, " + clientName + "!\n\n" +
-    "Seu relatório da Mapa de Bloqueios Emocionais está anexado a este e-mail.\n" +
+    "Seu relatório do Mapa de Bloqueios Emocionais está anexado a este e-mail.\n" +
     "Média total: " + media + "%\n\n" +
     "Instituto Impulso Coaching de Liderança";
 
   const htmlBody =
     '<div style="font-family:Arial,sans-serif;color:#0f172a;line-height:1.6">' +
       '<h2 style="color:#063b7a">Olá, ' + escapeHtml_(clientName) + '!</h2>' +
-      '<p>Seu relatório da <strong>Mapa de Bloqueios Emocionais</strong> está anexado.</p>' +
+      '<p>Seu relatório da <strong>Pesquisa Bloqueios Emocionais</strong> está anexado.</p>' +
       '<p><strong>Média total:</strong> ' + media + '%</p>' +
       '<p>Use este material como apoio de autoconhecimento e desenvolvimento.</p>' +
       '<p style="color:#475569">Instituto Impulso Coaching de Liderança<br>' +

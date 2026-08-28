@@ -135,6 +135,7 @@
         <div class="form-group col-half"><label for="whatsapp">WhatsApp *</label><div class="field"><input id="whatsapp" type="tel" inputmode="tel" placeholder="(00) 90000-0000"></div></div>
         <div class="form-group col-short"><label for="age">Idade *</label><div class="field"><input id="age" type="number" inputmode="numeric" min="12" max="120" placeholder="Ex: 35"></div></div>
         <div class="form-group col-half"><label for="occupation">Profissão *</label><div class="field"><input id="occupation" type="text" placeholder="Ex: Empresário"></div></div>
+        <div class="form-group col-full"><label for="goal">Qual mudança importante você mais deseja realizar hoje? *</label><div class="field"><input id="goal" type="text" maxlength="240" placeholder="Ex.: me posicionar melhor, parar de procrastinar, assumir uma nova oportunidade..."></div></div>
         <div class="form-group col-half"><label for="education">Grau de Instrução *</label><div class="field"><select id="education"><option value="">Selecione...</option><option>Ensino Fundamental</option><option>Ensino Médio</option><option>Superior Incompleto</option><option>Superior Completo</option><option>Pós-graduação / MBA</option><option>Mestrado / Doutorado</option></select></div></div>
         <div class="form-group col-full"><label for="email">E-mail *</label><div class="field"><input id="email" type="email" placeholder="email@exemplo.com"></div></div>
       </div><div style="display:flex;justify-content:center;margin-top:24px"><button id="start-btn" class="btn btn-primary" type="button" onclick="startTest(this)" style="width:100%;max-width:340px">Iniciar Pesquisa</button></div></div>
@@ -312,8 +313,8 @@
     document.getElementById("whatsapp").addEventListener("input",function(){maskPhone(this)});
 
     async function startTest(button){
-      const name=document.getElementById("name").value.trim(),whatsapp=document.getElementById("whatsapp").value.trim(),age=document.getElementById("age").value.trim(),occupation=document.getElementById("occupation").value.trim(),education=document.getElementById("education").value.trim(),email=document.getElementById("email").value.trim();
-      if(!name||!whatsapp||!age||!occupation||!education||!validEmail(email)){alert("Preencha todos os campos e informe um e-mail válido.");return}
+      const name=document.getElementById("name").value.trim(),whatsapp=document.getElementById("whatsapp").value.trim(),age=document.getElementById("age").value.trim(),occupation=document.getElementById("occupation").value.trim(),goal=document.getElementById("goal").value.trim(),education=document.getElementById("education").value.trim(),email=document.getElementById("email").value.trim();
+      if(!name||!whatsapp||!age||!occupation||!goal||!education||!validEmail(email)){alert("Preencha todos os campos e informe um e-mail válido.");return}
       const begin=()=>{order=shuffleCopy(QUESTIONS.map(q=>q.id));currentIndex=0;document.getElementById("step-intro").classList.remove("active");document.getElementById("step-quiz").classList.add("active");renderQuestion()};
       if(!window.ImpulsoResearchAccess){alert("Não foi possível carregar o controle de acesso. Atualize a página e tente novamente.");return}await window.ImpulsoResearchAccess.start({researchId:"bloqueios-emocionais",name,email,whatsapp,button,onAllowed:begin});
     }
@@ -405,6 +406,7 @@
       const education=document.getElementById("education").value.trim();
       const email=document.getElementById("email").value.trim();
       const whatsapp=document.getElementById("whatsapp").value.trim();
+      const goal=document.getElementById("goal").value.trim();
       const logo=await loadLogoDataUrl();
       let pageNo=1;
 
@@ -464,12 +466,14 @@
 
       // CAPA / SÍNTESE
       let y=newPage("Mapa de Bloqueios Emocionais","Relatório individual de autoconhecimento");
-      doc.setFillColor(244,249,255);doc.setDrawColor(207,230,255);doc.roundedRect(margin,y,contentW,29,4,4,"FD");
+      doc.setFillColor(244,249,255);doc.setDrawColor(207,230,255);doc.roundedRect(margin,y,contentW,39,4,4,"FD");
       doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(12);doc.text(name,margin+5,y+8);
       doc.setTextColor(71,85,105);doc.setFont("helvetica","normal");doc.setFontSize(8.5);
       doc.text("Idade: "+age+"   |   Profissão: "+occupation,margin+5,y+15,{maxWidth:contentW-10});
       doc.text("Escolaridade: "+education+"   |   E-mail: "+email,margin+5,y+22,{maxWidth:contentW-10});
-      y+=38;
+      doc.setTextColor(6,59,122);doc.setFont("helvetica","bold");doc.setFontSize(8);doc.text("META DE MUDANÇA",margin+5,y+29);
+      doc.setTextColor(51,65,85);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.text(doc.splitTextToSize(goal,contentW-10),margin+5,y+35);
+      y+=48;
       const primary=DIMENSIONS[primaryKey];
       doc.setFillColor(6,59,122);doc.roundedRect(margin,y,contentW,34,5,5,"F");
       doc.setTextColor(186,230,253);doc.setFont("helvetica","bold");doc.setFontSize(8);doc.text("BLOQUEIO PREDOMINANTE",margin+6,y+7);
@@ -532,12 +536,13 @@
       const dataUri=doc.output("datauristring"),pdfBase64=dataUri.split(",")[1]||"";
       const submissionId=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():"bloqueios-"+Date.now()+"-"+Math.random().toString(36).slice(2);
       const analysisPayload={
+        goal,
         primaryKey,
         top3:sorted.slice(0,3).map(([k,v])=>({key:k,label:DIMENSIONS[k].label,score:v,belief:DIMENSIONS[k].belief,hiddenCommitment:DEEP_ANALYSIS[k].hiddenCommitment,bigAssumption:DEEP_ANALYSIS[k].bigAssumption}))
       };
       const payload={
         apiKey:API_KEY,submissionId,respondidoEm:new Date().toISOString(),instrumento:"Mapa de Bloqueios Emocionais",testId:"bloqueios_emocionais_40_v4",
-        nome:name,email,whatsapp,idade:age,profissao:occupation,escolaridade:education,
+        nome:name,email,whatsapp,idade:age,profissao:occupation,escolaridade:education,metaMudanca:goal,
         perfilPrimario:primary.label+" ("+scores[primaryKey]+"%)",perfilSecundario:"Índice Geral: "+avg+"%",
         scoresJson:JSON.stringify(scores),analysisJson:JSON.stringify(analysisPayload),mediaTotal:avg,
         pdfBase64,pdfFileName:pdfName,sendEmail:true,notifyAdmin:true

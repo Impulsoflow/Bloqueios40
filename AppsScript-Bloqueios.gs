@@ -49,7 +49,8 @@ const HEADERS = [
   "Erro",
   "Submission ID",
   "Relatório PDF",
-  "Link Relatório PDF"
+  "Link Relatório PDF",
+  "Meta de Mudança"
 ];
 
 function doGet() {
@@ -105,7 +106,8 @@ function doPost(e) {
         "",
         submissionId,
         "",
-        ""
+        "",
+        clean_(payload.metaMudanca)
       ]);
       row = sheet.getLastRow();
       SpreadsheetApp.flush();
@@ -316,6 +318,7 @@ function sendClientReport_(payload, pdfBlob, reportLink) {
   const plainText =
     "Olá, " + clientName + "!\n\n" +
     "Seu relatório detalhado do Mapa de Bloqueios Emocionais está anexado a este e-mail.\n" +
+    "Meta de mudança: " + clean_(payload.metaMudanca) + "\n" +
     "Padrão predominante: " + perfilPrimario + "\n" +
     "Índice geral: " + media + "%\n\n" +
     "Link permanente do relatório: " + reportLink + "\n\n" +
@@ -331,7 +334,8 @@ function sendClientReport_(payload, pdfBlob, reportLink) {
       '<div style="background:#fff;padding:24px;border-radius:14px;margin-top:16px">' +
         '<h2 style="color:#063b7a;margin:0 0 12px">Olá, ' + escapeHtml_(clientName) + '!</h2>' +
         '<p style="color:#334155">Seu <strong>Relatório Detalhado do Mapa de Bloqueios Emocionais</strong> está anexado.</p>' +
-        '<p style="color:#334155"><strong>Padrão predominante:</strong> ' + escapeHtml_(perfilPrimario) + '<br>' +
+        '<p style="color:#334155"><strong>Meta de mudança:</strong> ' + escapeHtml_(clean_(payload.metaMudanca)) + '<br>' +
+        '<strong>Padrão predominante:</strong> ' + escapeHtml_(perfilPrimario) + '<br>' +
         '<strong>Índice geral:</strong> ' + media + '%</p>' +
         '<p style="color:#334155">O relatório aprofunda seus três padrões mais fortes e apresenta crenças associadas, medos, mecanismos de proteção, compromissos ocultos, grandes pressupostos, ciclo do bloqueio, perguntas de coaching e experimentos seguros de mudança.</p>' +
         '<div style="text-align:center;margin:24px 0">' +
@@ -361,6 +365,7 @@ function notifyAdmin_(payload, submissionId, row, reportLink) {
       "Participante: " + clean_(payload.nome) + "\n" +
       "E-mail: " + clean_(payload.email).toLowerCase() + "\n" +
       "WhatsApp: " + clean_(payload.whatsapp) + "\n" +
+      "Meta de mudança: " + clean_(payload.metaMudanca) + "\n" +
       "Padrão predominante: " + clean_(payload.perfilPrimario) + "\n" +
       "Índice Geral: " + Number(payload.mediaTotal || 0) + "%\n" +
       "Linha: " + row + "\n" +

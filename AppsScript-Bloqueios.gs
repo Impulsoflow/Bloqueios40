@@ -60,7 +60,7 @@ function doGet(e) {
       service: "Mapa de Bloqueios Emocionais — Impulso",
       version: "2026-08-28-v4",
       sheet: CONFIG.sheetName
-    }, callbackName_(e));
+    });
   }
 
   try {
@@ -68,7 +68,7 @@ function doGet(e) {
     const sheet = spreadsheet.getSheetByName(CONFIG.sheetName);
     const row = sheet ? findSubmissionRow_(sheet, submissionId) : 0;
     if (!row) {
-      return jsonResponse_({ ok: false, pending: true }, callbackName_(e));
+      return jsonResponse_({ ok: false, pending: true });
     }
 
     const emailStatus = String(sheet.getRange(row, 22).getValue()).toUpperCase();
@@ -81,14 +81,14 @@ function doGet(e) {
       submissionId: submissionId,
       row: row,
       message: error || undefined
-    }, callbackName_(e));
+    });
   } catch (error) {
     return jsonResponse_({
       ok: false,
       saved: false,
       pending: false,
       message: errorMessage_(error)
-    }, callbackName_(e));
+    });
   }
 }
 

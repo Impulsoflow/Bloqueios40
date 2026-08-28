@@ -165,7 +165,7 @@
       const name=document.getElementById("name").value.trim(),whatsapp=document.getElementById("whatsapp").value.trim(),age=document.getElementById("age").value.trim(),occupation=document.getElementById("occupation").value.trim(),education=document.getElementById("education").value.trim(),email=document.getElementById("email").value.trim();
       if(!name||!whatsapp||!age||!occupation||!education||!validEmail(email)){alert("Preencha todos os campos e informe um e-mail válido.");return}
       const begin=()=>{order=shuffleCopy(QUESTIONS.map(q=>q.id));currentIndex=0;document.getElementById("step-intro").classList.remove("active");document.getElementById("step-quiz").classList.add("active");renderQuestion()};
-      if(window.ImpulsoResearchAccess){await window.ImpulsoResearchAccess.start({researchId:"bloqueios-emocionais",name,email,whatsapp,button,onAllowed:begin})}else begin();
+      if(!window.ImpulsoResearchAccess){alert("Não foi possível carregar o controle de acesso. Atualize a página e tente novamente.");return}await window.ImpulsoResearchAccess.start({researchId:"bloqueios-emocionais",name,email,whatsapp,button,onAllowed:begin});
     }
 
     function currentQuestion(){return QUESTIONS.find(q=>q.id===order[currentIndex])}

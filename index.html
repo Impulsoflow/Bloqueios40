@@ -631,7 +631,8 @@
       setAutoStatus("Enviando seu relatório detalhado por e-mail e registrando o PDF no sistema Impulso...","pending");
       try{
         await postResultToScript(payload);
-        setAutoStatus("✅ Relatório processado automaticamente. O PDF foi enviado ao e-mail informado e registrado no sistema Impulso.","success");
+        if(window.ImpulsoAccountBridge?.active)void window.ImpulsoAccountBridge.reportSaved?.(false); // no-cors: conferir resultado original
+        setAutoStatus("Solicitação de envio realizada. A confirmação do recebimento no Google e do e-mail permanece pendente; preserve este PDF como segurança.","pending");
       }catch(error){
         console.error(error);doc.save(pdfName);
         setAutoStatus("⚠️ Não foi possível iniciar o envio automático. O PDF foi salvo neste dispositivo como segurança.","error");

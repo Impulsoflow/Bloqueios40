@@ -358,11 +358,24 @@
       const opts=document.getElementById("options");opts.innerHTML="";
       RESPONSE_OPTIONS.forEach(o=>{const el=document.createElement("button");el.type="button";el.className="opt"+(answers[q.id]===o.value?" selected":"");el.textContent=o.text;el.onclick=()=>selectOption(q.id,o.value,el);opts.appendChild(el)});
       document.getElementById("prev-btn").disabled=currentIndex===0;
-      document.getElementById("next-btn").textContent=currentIndex===TOTAL_Q-1?"Ver Resultado":"Próxima";
+      document.getElementById("next-btn").textContent=currentIndex===TOTAL_Q-1?"Finalizar e ver resultado":"Próxima";
+      document.getElementById("next-btn").style.display=currentIndex===TOTAL_Q-1?"inline-flex":"none";
       updateProgress();
     }
-    function selectOption(id,value,el){answers[id]=value;document.querySelectorAll("#options .opt").forEach(x=>x.classList.remove("selected"));el.classList.add("selected");updateProgress();setTimeout(()=>{if(currentIndex<TOTAL_Q-1){currentIndex++;renderQuestion()}else finishTest()},300)}
-    function goPrev(){if(currentIndex>0){currentIndex--;renderQuestion()}}
+    let advanceTimer=null;
+    function selectOption(id,value,el){
+      if(advanceTimer!==null)clearTimeout(advanceTimer);
+      answers[id]=value;
+      document.querySelectorAll("#options .opt").forEach(x=>x.classList.remove("selected"));
+      el.classList.add("selected");updateProgress();
+      const selectedIndex=currentIndex;
+      if(currentIndex<TOTAL_Q-1)advanceTimer=setTimeout(()=>{
+        advanceTimer=null;
+        if(currentIndex===selectedIndex&&answers[id]===value){currentIndex++;renderQuestion();}
+      },180);
+      // Na última questão, só o botão Finalizar submete a pesquisa.
+    }
+    function goPrev(){if(advanceTimer!==null){clearTimeout(advanceTimer);advanceTimer=null;}if(currentIndex>0){currentIndex--;renderQuestion()}}
     function goNext(){const q=currentQuestion();if(answers[q.id]===undefined){alert("Selecione uma alternativa antes de continuar.");return}if(currentIndex<TOTAL_Q-1){currentIndex++;renderQuestion()}else finishTest()}
     function updateProgress(){const count=Object.keys(answers).length;document.getElementById("answered-count").textContent=count;document.getElementById("progress-fill").style.width=(count/TOTAL_Q*100)+"%"}
 
